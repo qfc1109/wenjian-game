@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package wenjian.account;
+
+option java_multiple_files = true;
+option java_package = "com.wenjian.protobuf.account";
+
+import "common/common.proto";
+
+message LoginReq {
+  string login_key = 1;
+}
+
+message LoginResp {
+  wenjian.common.ErrorCode code = 1;
+  int64 player_id = 2;
+  string session_token = 3;
+  string kcp_token = 4;
+  string kcp_host = 5;
+  int32 kcp_port = 6;
+  int32 region_id = 7;
+  wenjian.common.Vec2i position = 8;
+  int64 server_time_ms = 9;
+}

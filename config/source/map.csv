@@ -1,0 +1,3 @@
+map_id,width,height,collision_ref
+1001,256,256,maps/1001_collision.csv
+2001,96,96,maps/2001_collision.csv

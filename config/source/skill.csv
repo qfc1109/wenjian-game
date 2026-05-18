@@ -1,0 +1,4 @@
+skill_id,cooldown_ms,cast_ms,hit_shape,range,radius,damage
+2001,600,180,ARC,900,240,12
+2002,1800,300,PROJECTILE,1800,120,24
+2003,2400,360,CIRCLE,0,480,32

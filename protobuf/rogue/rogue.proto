@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package wenjian.rogue;
+
+option java_multiple_files = true;
+option java_package = "com.wenjian.protobuf.rogue";
+
+import "common/common.proto";
+
+message StartRogueReq {
+  int32 rogue_id = 1;
+}
+
+message StartRogueResp {
+  wenjian.common.ErrorCode code = 1;
+  int64 instance_id = 2;
+  int32 map_id = 3;
+  wenjian.common.EntityState self = 4;
+  repeated wenjian.common.EntityState entities = 5;
+}
+
+message RewardItem {
+  int32 item_id = 1;
+  int32 count = 2;
+}
+
+message FinishRoguePush {
+  int64 instance_id = 1;
+  bool success = 2;
+  repeated RewardItem rewards = 3;
+}

@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package wenjian.world;
+
+option java_multiple_files = true;
+option java_package = "com.wenjian.protobuf.world";
+
+import "common/common.proto";
+
+message EnterRegionReq {
+  int32 region_id = 1;
+}
+
+message EnterRegionResp {
+  wenjian.common.ErrorCode code = 1;
+  int32 region_id = 2;
+  wenjian.common.EntityState self = 3;
+  repeated wenjian.common.EntityState entities = 4;
+  int64 server_tick = 5;
+}
+
+message RegionSnapshot {
+  int64 server_tick = 1;
+  int64 ack_seq = 2;
+  repeated wenjian.common.EntityState entities = 3;
+}

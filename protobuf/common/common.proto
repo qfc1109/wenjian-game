@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package wenjian.common;
+
+option java_multiple_files = true;
+option java_package = "com.wenjian.protobuf.common";
+
+enum ErrorCode {
+  ERROR_CODE_UNSPECIFIED = 0;
+  ERROR_CODE_OK = 1;
+  ERROR_CODE_INVALID_REQUEST = 2;
+  ERROR_CODE_UNAUTHORIZED = 3;
+  ERROR_CODE_NOT_FOUND = 4;
+  ERROR_CODE_CONFIG_ERROR = 5;
+  ERROR_CODE_SERVER_ERROR = 6;
+}
+
+message Vec2i {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+enum EntityType {
+  ENTITY_TYPE_UNSPECIFIED = 0;
+  ENTITY_TYPE_PLAYER = 1;
+  ENTITY_TYPE_MONSTER = 2;
+  ENTITY_TYPE_NPC = 3;
+  ENTITY_TYPE_DROP = 4;
+}
+
+message EntityState {
+  int64 entity_id = 1;
+  EntityType entity_type = 2;
+  Vec2i position = 3;
+  int32 hp = 4;
+  int32 max_hp = 5;
+}

@@ -105,11 +105,17 @@
 
 ## 下一步建议
 
-1. 创建一级目录与 README 说明。
-2. 创建 protobuf 最小协议骨架。
-3. 创建 config 最小配置骨架。
+1. 检查并提交一级目录、protobuf 和 config 骨架。
+2. 规划后端 Maven 多模块骨架。
+3. 规划 Unity `Proto_CombatField` 原型任务。
 4. 生成第二批补充视觉素材。
-5. 规划 Unity `Proto_CombatField` 原型任务。
+
+## 当前骨架进展
+
+- 已创建 `wenjian-game-server/README.md`。
+- 已创建 `wenjian-client/README.md`。
+- 已创建 `protobuf/README.md` 和首批最小 `.proto` 文件。
+- 已创建 `config/README.md`、`config/source/` 示例 CSV、`schema/export/tools` 说明。
 
 ## 当前风险
 

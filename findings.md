@@ -80,3 +80,24 @@
 - `05-player-archetypes.png`：玩家四职业方向，1774x887。
 - `06-sword-energy-vfx.png`：剑气技能特效组，1536x1024。
 - `07-combat-hud-concept.png`：战斗 HUD 氛围，1254x1254。
+
+## 第一阶段骨架创建记录
+
+- 已创建一级目录说明：`wenjian-game-server/README.md`、`wenjian-client/README.md`、`protobuf/README.md`、`config/README.md`。
+- 已创建最小 protobuf 协议骨架：common、account、world、battle、rogue。
+- 已创建最小配置表示例：player_template、map、region、skill、monster、rogue、reward_pool、item。
+- 当前未创建 Maven 多模块骨架。
+- 当前未创建 Unity 正式工程文件。
+
+### 骨架原则
+
+- 协议只服务登录、进入区域、输入帧、区域快照、技能事件、伤害事件和单人秘境开始/结算。
+- 配置只服务出生点、地图、区域、技能、怪物、秘境和奖励池。
+- 高频协议不携带背包、任务、聊天等低频业务数据。
+- 示例配置不代表最终数值平衡。
+
+### 检查记录
+
+- protobuf 基础检查通过：5 个 `.proto` 文件均包含 `syntax = "proto3";` 和 `java_package`。
+- CSV 基础检查通过：8 个 `config/source/*.csv` 文件均可被 `Import-Csv` 读取且存在数据行。
+- PowerShell 单行 CSV 检查注意：`Import-Csv` 返回单对象时 `.Count` 不可靠，应使用 `@(Import-Csv <file>).Count`。
