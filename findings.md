@@ -33,9 +33,7 @@
 
 ## 待补充发现
 
-- 视觉生成工具实际使用方式。
-- 首批素材输出目录。
-- 首批素材文件清单与质量评估。
+- 第二批素材文件清单与质量评估。
 
 ## 外部资料线索
 
@@ -63,3 +61,22 @@
 - 美术、架构、后端、Unity 前端四条线可以先并行预研，减少互相等待。
 - 实际代码实现阶段应避免多个智能体同时修改同一批文件。
 - 架构师和美术总监存在合理分歧：架构师强调工程契约先行，美术总监强调概念图先统一气质。项目经理综合后选择先做低风险概念图，再回到目录与协议骨架。
+
+## 首批视觉素材生成记录
+
+- 生成方式：Codex 内置图像生成能力。
+- 输出目录：`wenjian-client/ArtConcepts/images/`
+- 素材清单：`wenjian-client/ArtConcepts/README.md`
+- 批量预览：`wenjian-client/ArtConcepts/contact-sheet.png`
+- 外部网站密钥：未写入仓库。
+- 当前定位：概念预览，不是最终 Unity 可用资源。
+
+### 文件清单
+
+- `01-world-map-overview.png`：江湖区域式大地图总览，1536x1024。
+- `02-wenjian-city-main-town.png`：主城“问剑城”，1254x1254。
+- `03-bamboo-ancient-road.png`：野外“竹林古道”，1254x1254。
+- `04-hidden-sword-dungeon.png`：秘境“藏剑地宫”，1254x1254。
+- `05-player-archetypes.png`：玩家四职业方向，1774x887。
+- `06-sword-energy-vfx.png`：剑气技能特效组，1536x1024。
+- `07-combat-hud-concept.png`：战斗 HUD 氛围，1254x1254。

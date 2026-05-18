@@ -50,6 +50,20 @@
 - 基础技能特效方向
 - UI 氛围参考
 
+已生成首批 7 张高优先级概念图，保存于 `wenjian-client/ArtConcepts/images/`：
+
+- `01-world-map-overview.png`
+- `02-wenjian-city-main-town.png`
+- `03-bamboo-ancient-road.png`
+- `04-hidden-sword-dungeon.png`
+- `05-player-archetypes.png`
+- `06-sword-energy-vfx.png`
+- `07-combat-hud-concept.png`
+
+已新增素材清单：`wenjian-client/ArtConcepts/README.md`
+
+已新增批量预览图：`wenjian-client/ArtConcepts/contact-sheet.png`
+
 ### 多智能体协作机制
 
 - 已由主控 Codex 会话承担项目经理角色。
@@ -87,18 +101,17 @@
 
 ## 下一步建议
 
-1. 先确认首批素材是“概念图预览”还是“Unity 可用资源草案”。
-2. 确认素材输出目录和命名规范。
-3. 生成第一批视觉素材。
-4. 编写客户端视觉方向文档。
-5. 根据视觉方向拆分第一阶段实施计划。
-6. 创建目录与协议骨架实施计划。
+1. 编写客户端视觉方向文档。
+2. 根据视觉方向拆分第一阶段实施计划。
+3. 创建目录与协议骨架实施计划。
+4. 生成第二批补充视觉素材。
 
 ## 当前风险
 
 - 前端视觉与动作规格尚未确定，可能影响战斗 Tick、碰撞范围、技能前后摇和协议字段。
 - 生成类素材适合做方向预览，不能直接等同于最终可用资产。
 - 外部生成工具的使用结果需要记录来源、文件名和用途，避免后续遗忘素材来历。
+- 本批概念图使用内置图像生成能力生成，未将外部网站密钥写入仓库。
 
 ## 操作原则
 
