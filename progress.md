@@ -64,6 +64,8 @@
 
 已新增批量预览图：`wenjian-client/ArtConcepts/contact-sheet.png`
 
+已新增客户端视觉方向文档：`docs/client/wenjian-client-visual-direction.md`
+
 ### 多智能体协作机制
 
 - 已由主控 Codex 会话承担项目经理角色。
@@ -101,10 +103,10 @@
 
 ## 下一步建议
 
-1. 编写客户端视觉方向文档。
-2. 根据视觉方向拆分第一阶段实施计划。
-3. 创建目录与协议骨架实施计划。
-4. 生成第二批补充视觉素材。
+1. 根据视觉方向拆分第一阶段实施计划。
+2. 创建目录与协议骨架实施计划。
+3. 生成第二批补充视觉素材。
+4. 规划 Unity `Proto_CombatField` 原型任务。
 
 ## 当前风险
 
