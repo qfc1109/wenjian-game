@@ -255,18 +255,20 @@ Verified on 2026-05-21:
 - Modify: `task_plan.md`
 - Modify: `findings.md`
 
-- [ ] **Step 1: Add a test for login and enter-region flow**
+- [x] **Step 1: Add a test for login and enter-region flow**
 
 The test must prove:
 
 - login returns a player id and success code.
 - enter region returns region id and at least one player entity.
 
-- [ ] **Step 2: Implement the smallest in-memory service**
+Verified RED on 2026-05-21: `mvn -q -pl wenjian-gateway-ws -am test` failed at compile time because `FirstChainGatewayService` and DTO types did not exist.
+
+- [x] **Step 2: Implement the smallest in-memory service**
 
 Use in-memory data only. No database, Redis, account persistence, or external service.
 
-- [ ] **Step 3: Verify the module**
+- [x] **Step 3: Verify the module**
 
 Run from `wenjian-game-server`:
 
@@ -275,6 +277,10 @@ mvn -q -pl wenjian-gateway-ws -am test
 ```
 
 Expected: gateway tests pass.
+
+Verified GREEN on 2026-05-21: `mvn -q -pl wenjian-gateway-ws -am test` passed.
+
+Current limitation: this is not yet playable. It proves the back-end login and enter-region service behavior in tests, but a Unity scene and client connection still need Task 5 and Task 6.
 
 ### Task 5: Unity Proto_CombatField Plan And Shell
 

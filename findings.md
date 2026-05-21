@@ -143,6 +143,19 @@
 - 已新增 `.gitignore`，忽略 `target/`、`.idea/`、`*.iml`、`*.class`、`*.log` 等本地和构建产物。
 - 已在 `wenjian-game-server` 目录执行 `mvn -q -DskipTests validate`，验证通过。
 
+## 2026-05-21 Task 4 后端第一链路记录
+
+- 已按 TDD 写入登录与进入区域测试。
+- RED 阶段命令：`mvn -q -pl wenjian-gateway-ws -am test`。
+- RED 阶段结果：测试编译失败，原因是 `FirstChainGatewayService`、`LoginResult`、`EnterRegionResult`、`GridPosition`、`ResultCode` 等类型不存在。
+- 已实现最小内存链路：
+  - `login` 返回固定开发玩家、session token、初始区域 `1001` 和出生点 `(10, 12)`。
+  - `enterRegion` 返回玩家自身实体、一个训练敌人和 server tick。
+  - 不接数据库、Redis、真实网络帧或 KCP。
+- GREEN 阶段命令：`mvn -q -pl wenjian-gateway-ws -am test`。
+- GREEN 阶段结果：通过。
+- 当前限制：该链路还不是可试玩游戏，只能作为后端最小行为验证。试玩需要 Unity `Proto_CombatField` 原型壳、场景、输入和客户端连接展示。
+
 ## 外部资料线索
 
 - Unity 官方 Unity 6 支持页面显示 Unity 6.3 LTS 为当前 LTS，适合锁定生产版本，支持到 2027 年 12 月。

@@ -68,6 +68,8 @@
 - 后端 Maven 骨架执行前曾发现环境阻塞：默认 Java 为 1.8.0_181 且未找到 Maven。
 - 已使用用户提供的 `E:\JAVA\jdk21` 和新安装的 `E:\apache-maven-3.9.16` 解决当前会话内 Java/Maven 环境问题。
 - 已创建后端 Maven 最小多模块骨架，并通过 `mvn -q -DskipTests validate`。
+- 已按 TDD 完成后端登录与进入区域最小内存链路测试和实现，`mvn -q -pl wenjian-gateway-ws -am test` 通过。
+- 当前仍不能试玩游戏；下一步需要 Unity `Proto_CombatField` 原型壳和客户端连接展示，才能做试玩级验收。
 
 ## 进行中
 

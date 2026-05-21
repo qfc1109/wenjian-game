@@ -16,7 +16,9 @@
 - 【✔】 已验证 `E:\JAVA\jdk21` 可用，安装 Maven 3.9.16 到 `E:\apache-maven-3.9.16` 并通过 SHA-512 校验 <2026-05-21 12:05>
 - 【✔】 创建后端 Maven 最小多模块骨架：share、protobuf、config、game-core、gateway-ws <2026-05-21 12:05>
 - 【✔】 后端 Maven 骨架 `mvn -q -DskipTests validate` 验证通过 <2026-05-21 12:05>
-- 【 】 下一步进入 Task 4：WebSocket 登录与进入区域最小链路，需先按 TDD 写测试 <2026-05-21 12:05>
+- 【✔】 Task 4 按 TDD 新增登录与进入区域最小链路测试，RED 阶段确认缺少实现类型 <2026-05-21 15:38>
+- 【✔】 Task 4 新增最小内存实现，GREEN 阶段网关模块测试通过 <2026-05-21 15:38>
+- 【 】 下一步进入 Task 5：Unity `Proto_CombatField` 原型壳，第一链路完成后才能开始试玩级验证 <2026-05-21 15:38>
 
 ### 验证记录
 
@@ -31,6 +33,9 @@
 - 【✔】 使用 `E:\JAVA\jdk21` 和 `E:\apache-maven-3.9.16` 重新执行 `java -version` / `mvn -v`，环境满足 Java 21 + Maven 3.9.x <2026-05-21 12:05>
 - 【✔】 `Get-ChildItem -LiteralPath 'wenjian-game-server' -Directory` 已执行，仅包含 5 个最小 Maven 模块 <2026-05-21 12:05>
 - 【✔】 `mvn -q -DskipTests validate` 已在 `wenjian-game-server` 下执行，通过 <2026-05-21 12:05>
+- 【✔】 RED：`mvn -q -pl wenjian-gateway-ws -am test` 首次执行失败，原因是 `FirstChainGatewayService` 和 DTO 类型不存在 <2026-05-21 15:38>
+- 【✔】 GREEN：`mvn -q -pl wenjian-gateway-ws -am test` 再次执行通过 <2026-05-21 15:38>
+- 【❓】 第一链路当前还不能试玩游戏，只能证明后端最小登录/进入区域行为；试玩需要 Unity `Proto_CombatField` 原型壳和客户端连接展示 <2026-05-21 15:38>
 
 ### 文档修改
 
@@ -49,6 +54,10 @@
 | `wenjian-game-server/wenjian-game-core/pom.xml` | 新增游戏核心模块骨架，依赖 share/protobuf/config。 | 删除该模块目录 |
 | `wenjian-game-server/wenjian-gateway-ws/pom.xml` | 新增 WebSocket 网关模块骨架，依赖核心模块和 Spring WebSocket starter。 | 删除该模块目录 |
 | `wenjian-game-server/README.md` | 更新后端最小 Maven 模块说明和本地验证命令。 | 恢复旧说明 |
+| `wenjian-game-server/wenjian-gateway-ws/pom.xml` | 新增 `spring-boot-starter-test` 测试依赖。 | 移除该测试依赖 |
+| `wenjian-game-server/wenjian-gateway-ws/src/test/java/com/wenjian/gateway/ws/FirstChainGatewayServiceTest.java` | 新增登录与进入区域最小链路测试。 | 删除该测试文件 |
+| `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainGatewayService.java` | 新增内存版登录与进入区域服务。 | 删除该实现文件 |
+| `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/GatewayDtos.java` | 新增最小链路 DTO 和枚举。 | 删除该实现文件 |
 
 ## 2026-05-20 工作记录
 
