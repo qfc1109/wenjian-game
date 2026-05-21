@@ -64,6 +64,10 @@
 - 已新增计划文档：`docs/plans/minimal-dual-track-chain-plan.md`。
 - 计划把后端 Maven 最小骨架、Unity `Proto_CombatField` 原型壳、WebSocket 登录、进入区域、区域快照、单技能事件和最小秘境闭环拆成可验收任务。
 - 明确每个小闭环完成后必须更新 `task_plan.md`、`progress.md` 和 `findings.md`，并在进入下一模块前汇报。
+- 已完成协议契约复查，现有 protobuf 已覆盖最小链路必需消息，暂不新增字段。
+- 后端 Maven 骨架执行前曾发现环境阻塞：默认 Java 为 1.8.0_181 且未找到 Maven。
+- 已使用用户提供的 `E:\JAVA\jdk21` 和新安装的 `E:\apache-maven-3.9.16` 解决当前会话内 Java/Maven 环境问题。
+- 已创建后端 Maven 最小多模块骨架，并通过 `mvn -q -DskipTests validate`。
 
 ## 进行中
 

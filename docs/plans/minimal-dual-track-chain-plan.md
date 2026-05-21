@@ -144,7 +144,7 @@ Verified on 2026-05-21:
 - Modify if needed: `protobuf/rogue/rogue.proto`
 - Modify: `findings.md`
 
-- [ ] **Step 1: Inspect existing messages**
+- [x] **Step 1: Inspect existing messages**
 
 Run:
 
@@ -154,11 +154,13 @@ rg -n "message LoginReq|message LoginResp|message EnterRegionReq|message RegionS
 
 Expected: every minimal-chain message is present.
 
-- [ ] **Step 2: Only add missing fields that block the chain**
+- [x] **Step 2: Only add missing fields that block the chain**
 
 Allowed additions are limited to player id, region id, entity id, position, direction, skill id, target position, damage value, reward id, and error code. Do not add inventory, chat, quest, mail, shop, guild, or ranking fields.
 
-- [ ] **Step 3: Verify protobuf basics**
+Review result on 2026-05-21: no protocol fields were added. Existing messages already cover the first minimal chain.
+
+- [x] **Step 3: Verify protobuf basics**
 
 Run:
 
@@ -175,6 +177,8 @@ foreach ($f in $protoFiles) {
 
 Expected: no `PROTO_CHECK_FAIL`.
 
+Verified on 2026-05-21: 5 `.proto` files checked, no `PROTO_CHECK_FAIL`.
+
 ### Task 3: Back-End Maven Skeleton
 
 **Files:**
@@ -187,7 +191,23 @@ Expected: no `PROTO_CHECK_FAIL`.
 - Modify: `wenjian-game-server/README.md`
 - Modify: `task_plan.md`
 
-- [ ] **Step 1: Create only the minimum modules**
+- [x] **Step 0: Resolve local Java/Maven environment blocker**
+
+Current blocker found on 2026-05-21:
+
+- `mvn -v` fails because Maven is not available on PATH.
+- `java -version` reports Java 1.8.0_181.
+- The planned Spring Boot 4.x / Java 21 direction cannot be validated in this environment yet.
+
+Before creating the Maven skeleton, install or expose Java 21 and Maven 3.9.x, or approve a Maven Wrapper bootstrap path.
+
+Resolved on 2026-05-21:
+
+- JDK 21 verified at `E:\JAVA\jdk21`.
+- Maven 3.9.16 installed at `E:\apache-maven-3.9.16`.
+- `mvn -v` reports Maven 3.9.16 and Java 21.0.11.
+
+- [x] **Step 1: Create only the minimum modules**
 
 The first Maven skeleton must include only:
 
@@ -201,7 +221,7 @@ wenjian-gateway-ws
 
 Do not create KCP, admin, database, mail, bag, task, guild, or payment modules in this task.
 
-- [ ] **Step 2: Verify Maven structure**
+- [x] **Step 2: Verify Maven structure**
 
 Run:
 
@@ -211,7 +231,7 @@ Get-ChildItem -LiteralPath 'wenjian-game-server' -Directory | Select-Object -Exp
 
 Expected: only the minimal modules above plus any existing non-module documentation files.
 
-- [ ] **Step 3: Run Maven validation**
+- [x] **Step 3: Run Maven validation**
 
 Run from `wenjian-game-server`:
 
@@ -220,6 +240,11 @@ mvn -q -DskipTests validate
 ```
 
 Expected: build validates. If Maven is not installed, record the tool environment blocker in `task_plan.md`.
+
+Verified on 2026-05-21:
+
+- Module directories are exactly `wenjian-config`, `wenjian-game-core`, `wenjian-gateway-ws`, `wenjian-protobuf`, and `wenjian-share`.
+- `mvn -q -DskipTests validate` passed from `wenjian-game-server`.
 
 ### Task 4: Back-End First WebSocket Chain
 

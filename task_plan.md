@@ -11,7 +11,12 @@
 - 【✔】 用户确认采用方案 C：契约先行，前后端最小链路并行 <2026-05-21 12:05>
 - 【✔】 新增前后端并行最小链路实施计划 <2026-05-21 12:05>
 - 【✔】 执行 Task 1 检查：文档关键内容、proto 基础状态、CSV 基础状态 <2026-05-21 12:05>
-- 【 】 等待计划基线验收后，进入协议契约复查和 Maven 最小骨架 <2026-05-21 12:05>
+- 【✔】 完成 Task 2 协议契约复查，现有 protobuf 已覆盖最小链路消息 <2026-05-21 12:05>
+- 【❓】 Task 3 后端 Maven 骨架受本机环境阻塞：未找到 Maven，当前 Java 为 1.8.0_181 <2026-05-21 12:05>
+- 【✔】 已验证 `E:\JAVA\jdk21` 可用，安装 Maven 3.9.16 到 `E:\apache-maven-3.9.16` 并通过 SHA-512 校验 <2026-05-21 12:05>
+- 【✔】 创建后端 Maven 最小多模块骨架：share、protobuf、config、game-core、gateway-ws <2026-05-21 12:05>
+- 【✔】 后端 Maven 骨架 `mvn -q -DskipTests validate` 验证通过 <2026-05-21 12:05>
+- 【 】 下一步进入 Task 4：WebSocket 登录与进入区域最小链路，需先按 TDD 写测试 <2026-05-21 12:05>
 
 ### 验证记录
 
@@ -20,6 +25,12 @@
 - 【✔】 计划文档占位词扫描已执行，未发现 `TBD`、`TODO`、`implement later`、`fill in details` <2026-05-21 12:05>
 - 【✔】 protobuf 基础检查已执行，5 个 `.proto` 文件检查完成且无失败输出 <2026-05-21 12:05>
 - 【✔】 CSV 基础检查已执行，8 个 `config/source/*.csv` 文件检查完成且无失败输出 <2026-05-21 12:05>
+- 【✔】 协议契约复查已执行，最小链路所需 Login、EnterRegion、RegionSnapshot、InputFrame、SkillEvent、DamageEvent、StartRogue、FinishRogue 消息均存在 <2026-05-21 12:05>
+- 【❓】 `mvn -v` 已执行，失败：`mvn` 不在 PATH <2026-05-21 12:05>
+- 【❓】 `java -version` 已执行，当前为 Java 1.8.0_181，不满足 Java 21 方向 <2026-05-21 12:05>
+- 【✔】 使用 `E:\JAVA\jdk21` 和 `E:\apache-maven-3.9.16` 重新执行 `java -version` / `mvn -v`，环境满足 Java 21 + Maven 3.9.x <2026-05-21 12:05>
+- 【✔】 `Get-ChildItem -LiteralPath 'wenjian-game-server' -Directory` 已执行，仅包含 5 个最小 Maven 模块 <2026-05-21 12:05>
+- 【✔】 `mvn -q -DskipTests validate` 已在 `wenjian-game-server` 下执行，通过 <2026-05-21 12:05>
 
 ### 文档修改
 
@@ -29,6 +40,15 @@
 | `task_plan.md` | 更新当前目标、2026-05-21 工作记录和验证记录。 | 移除 2026-05-21 工作记录并恢复当前目标旧描述 |
 | `progress.md` | 同步当前重点为前后端并行最小链路计划。 | 恢复最新状态旧描述 |
 | `findings.md` | 记录方案 C 决策和执行边界。 | 删除对应方案 C 记录 |
+| `docs/plans/minimal-dual-track-chain-plan.md` | 标记 Task 2 协议复查完成，并在 Task 3 前增加 Java/Maven 环境阻塞项。 | 恢复 Task 2 勾选状态，删除 Task 3 Step 0 |
+| `.gitignore` | 新增 Maven/Java 构建产物和 IDE 文件忽略规则。 | 删除该文件或移除新增规则 |
+| `wenjian-game-server/pom.xml` | 新增后端 Maven 父工程，声明 5 个最小模块和 Java 21/Spring Boot 4.0.6 依赖管理。 | 删除该文件 |
+| `wenjian-game-server/wenjian-share/pom.xml` | 新增共享模块骨架。 | 删除该模块目录 |
+| `wenjian-game-server/wenjian-protobuf/pom.xml` | 新增 protobuf 集成占位模块骨架。 | 删除该模块目录 |
+| `wenjian-game-server/wenjian-config/pom.xml` | 新增配置模块骨架，依赖 `wenjian-share`。 | 删除该模块目录 |
+| `wenjian-game-server/wenjian-game-core/pom.xml` | 新增游戏核心模块骨架，依赖 share/protobuf/config。 | 删除该模块目录 |
+| `wenjian-game-server/wenjian-gateway-ws/pom.xml` | 新增 WebSocket 网关模块骨架，依赖核心模块和 Spring WebSocket starter。 | 删除该模块目录 |
+| `wenjian-game-server/README.md` | 更新后端最小 Maven 模块说明和本地验证命令。 | 恢复旧说明 |
 
 ## 2026-05-20 工作记录
 

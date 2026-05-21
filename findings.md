@@ -103,6 +103,46 @@
 - Unity 先做 `Proto_CombatField` 原型壳，不创建完整正式客户端工程内容。
 - 每个小闭环完成后先更新日志和汇报，再进入下一模块。
 
+## 2026-05-21 协议契约复查
+
+- 已复查最小链路所需 protobuf 消息。
+- `LoginReq`、`LoginResp`、`EnterRegionReq`、`EnterRegionResp`、`RegionSnapshot`、`InputFrame`、`SkillIntent`、`SkillEvent`、`DamageEvent`、`StartRogueReq`、`StartRogueResp`、`FinishRoguePush` 均已存在。
+- 当前不需要新增协议字段，避免猜测性扩展。
+- protobuf 基础检查覆盖 5 个 `.proto` 文件，无失败输出。
+
+## 2026-05-21 本地后端环境阻塞
+
+- `mvn -v` 失败：当前命令行找不到 Maven。
+- `java -version` 显示 Java 1.8.0_181。
+- `where.exe java` 仅发现 `E:\JAVA\jdk8`、`E:\JAVA\jdk8\jre` 和 Oracle javapath。
+- 本机未发现可直接使用的 Java 21 和 Maven 3.9.x。
+- 后端 Maven 骨架可以继续设计文件，但无法在当前环境可靠运行 `mvn validate`；进入 Task 3 前需要补齐 Java 21 + Maven，或确认使用 Maven Wrapper bootstrap 路线。
+
+## 2026-05-21 Java/Maven 环境处理记录
+
+- 用户提供 JDK21 路径：`E:\JAVA\jdk21`。
+- 已验证 JDK21：OpenJDK 21.0.11 LTS。
+- 已从 Apache 官方下载 Maven 3.9.16 binary zip 到 `E:\`。
+- 已下载 Maven 3.9.16 SHA-512 校验文件并校验通过。
+- 已解压 Maven 到 `E:\apache-maven-3.9.16`。
+- 使用会话级环境变量验证通过：
+  - `JAVA_HOME=E:\JAVA\jdk21`
+  - `MAVEN_HOME=E:\apache-maven-3.9.16`
+- 当前未修改系统级 PATH；后续命令需要在当前 shell 中设置上述环境变量，或由用户后续配置系统环境变量。
+
+## 2026-05-21 后端 Maven 最小骨架记录
+
+- 已创建 Maven 父工程：`wenjian-game-server/pom.xml`。
+- 已创建最小模块：
+  - `wenjian-share`
+  - `wenjian-protobuf`
+  - `wenjian-config`
+  - `wenjian-game-core`
+  - `wenjian-gateway-ws`
+- 未创建 KCP、admin、数据库、背包、任务、聊天、邮件、支付、排行榜等模块。
+- 已新增 `.gitignore`，忽略 `target/`、`.idea/`、`*.iml`、`*.class`、`*.log` 等本地和构建产物。
+- 已在 `wenjian-game-server` 目录执行 `mvn -q -DskipTests validate`，验证通过。
+
 ## 外部资料线索
 
 - Unity 官方 Unity 6 支持页面显示 Unity 6.3 LTS 为当前 LTS，适合锁定生产版本，支持到 2027 年 12 月。
