@@ -33,11 +33,58 @@
 - 若生成的是概念图，不应直接当作 Unity 最终可用资源。
 - 若要生成透明角色素材，需要单独确认透明背景处理方式。
 - 用户已反馈首批美术素材不满意；继续生成第二批素材前，需要先明确不满意点、参考风格、质量标准和拒绝标准。
+- 第二轮素材已转为可执行标准，但仍不是最终 Unity 资源；通过评审后仍需拆分为 Sprite、Tilemap、VFX 序列帧和 UI 组件。
 
 ## 待补充发现
 
 - 第二批素材文件清单与质量评估。
 - 首批素材不满意原因、可接受参考、不可接受风格边界。
+
+## 第二轮美术方向复盘记录
+
+- 用户确认方向：明快清爽的像素武侠，类似轻量动作肉鸽，战斗读得很清楚。
+- 项目经理决策：下一轮美术方向从“生成好看的武侠概念图”调整为“定义可执行的游戏美术标准”。
+- 风格标准：清晰像素风，不要写实厚涂伪像素。
+- 气质标准：明快、古朴、有剑意，不要过暗、过脏、过西幻。
+- 用途标准：每张图都必须服务游戏落地，例如角色尺寸、地块规格、战斗可读性、UI 信息层级。
+
+## 第二轮视觉标准素材生成记录
+
+- 生成方式：Codex 内置图像生成能力。
+- 输出目录：`wenjian-client/ArtConcepts/round2-visual-standards/images/`
+- 素材清单：`wenjian-client/ArtConcepts/round2-visual-standards/README.md`
+- 批量预览：`wenjian-client/ArtConcepts/round2-visual-standards/contact-sheet-round2.png`
+- 外部网站密钥：未写入仓库。
+- 当前定位：可执行视觉基准，不是最终 Unity 可用资源。
+
+### 文件清单
+
+- `08-character-spec-standard.png`：角色规格标准，用于 48x48 角色、职业剪影和动作方向。
+- `09-combat-field-readability.png`：战斗场景可读性，用于 32x32 Tilemap、障碍边界和走位空间。
+- `10-hud-readability-standard.png`：HUD 信息层级，用于技能栏、血条、内力、小地图和掉落提示。
+- `11-skill-vfx-readability.png`：技能特效可读性，用于普攻拖尾、剑气、冲刺残影和掌法冲击。
+- `12-enemy-silhouette-standard.png`：敌人剪影标准，用于普通怪、精英怪和小 Boss 轮廓。
+- `13-town-tile-style-standard.png`：主城地块与物件，用于建筑、地砖、摊位、竹子、灯笼和牌匾。
+- `14-sword-trial-room-standard.png`：秘境房间标准，用于房间结构、机关、宝箱、出口和战斗中心。
+
+## 后端目录结构参考记录
+
+用户提供了 `ddl-server` 项目目录截图，可作为后续后端 Maven 骨架和业务包结构参考。当前仅记录为参考线索，不在本阶段创建后端工程。
+
+从截图可见的参考点：
+
+- 顶层按服务拆分：`ddl-battle`、`ddl-center-server`、`ddl-config`、`ddl-cross-server`、`ddl-game-server`。
+- 游戏服内包含 `config`、`logs`、`sql`、`src/main/java` 等工程目录。
+- Java 包内有基础层 `foundation`，包含 `configuration`、`csvconfig`、`eventbus`、`handler`、`log4j`、`logger`、`netty`、`persistence`、`player`、`remote`。
+- 业务层按领域拆分为 `module`，可见 `account`、`arena`、`bag`、`battle`、`gm`、`hero`、`mail`、`mainline` 等目录。
+- 战斗处理器位于类似 `manager/processor` 的结构下，使用大量 `*BattleProcessor` 类承载不同玩法战斗逻辑。
+
+对《问剑江湖》的启发：
+
+- 后端骨架可以保留基础设施层与业务模块层的清晰边界。
+- `foundation` 思路可映射为项目内的 shared/config/network/persistence/player-context 等基础能力。
+- `module` 思路适合映射 account、world、battle、rogue、gm 等业务域。
+- 战斗 processor 可作为后续技能、秘境、区域战斗的扩展点，但第一阶段只保留最小接口和一个演示实现，避免过早复制大型项目复杂度。
 
 ## 外部资料线索
 
