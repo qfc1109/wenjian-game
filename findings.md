@@ -190,6 +190,30 @@ mvn -q -pl wenjian-gateway-ws -am test-compile spring-boot:run -Dspring-boot.run
 - Windows PowerShell 自带 `ClientWebSocket` 对 Tomcat 返回的 `Connection: upgrade, keep-alive` 兼容性不佳，不作为本项目第一验收客户端。
 - 当前限制：本轮证明后端 WebSocket 链路和临时客户端可联通；仍未完成 Unity 可试玩画面。
 
+## 2026-05-21 Task 7 单技能链路记录
+
+- 已按 TDD 新增单技能意图测试。
+- RED 阶段命令：`mvn -q -pl wenjian-gateway-ws -am test`。
+- RED 阶段结果：测试编译失败，原因是 `SkillCastResult` 和 `GridVector` 尚不存在。
+- 已实现最小内存技能链路：
+  - 使用 `config/source/player_template.csv` 中的默认技能 `2001`。
+  - 对齐 `config/source/skill.csv` 中 `2001` 的伤害值 `12`。
+  - `castSkill(1000001, 2001, aimDir)` 返回 `SkillEvent`。
+  - 命中固定训练敌人 `2000001` 时返回 `DamageEvent`，`hpDelta=-12`，`dead=false`。
+- 已扩展临时 WebSocket 文本协议：
+  - 请求：`SKILL 1000001 2001 1 0`
+  - 响应：`SKILL_EVENT` 和 `DAMAGE_EVENT`
+- 已更新 Unity `Proto_CombatField` 文档化可读性验收：
+  - 第一技能表现为短剑气占位效果。
+  - 技能效果不能遮挡玩家主体、敌人轮廓、血量位置或碰撞区域。
+  - 技能方向必须能从画面上读出。
+- GREEN 阶段命令：`mvn -q -pl wenjian-gateway-ws -am test`。
+- GREEN 阶段结果：通过。
+- 全量验证命令：`mvn -q test`。
+- 全量验证结果：通过。
+- 空白检查：`git diff --check` 通过；仅出现 Windows LF/CRLF 换行转换提示。
+- 当前限制：仍未创建真实 Unity 工程或脚本，本轮的前端验收是文档化约束；后端技能计算仍是内存固定事件，不代表完整战斗平衡或命中判定。
+
 ## 外部资料线索
 
 - Unity 官方 Unity 6 支持页面显示 Unity 6.3 LTS 为当前 LTS，适合锁定生产版本，支持到 2027 年 12 月。

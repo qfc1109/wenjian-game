@@ -15,6 +15,9 @@ enum EntityKind {
 record GridPosition(int x, int y) {
 }
 
+record GridVector(int x, int y) {
+}
+
 record LoginResult(
     ResultCode code,
     long playerId,
@@ -37,4 +40,25 @@ record EnterRegionResult(
     EntitySnapshot self,
     List<EntitySnapshot> entities,
     long serverTick) {
+}
+
+record SkillEvent(
+    long casterId,
+    int skillId,
+    GridPosition position,
+    GridVector aimDir) {
+}
+
+record DamageEvent(
+    long sourceId,
+    long targetId,
+    int skillId,
+    int hpDelta,
+    boolean dead) {
+}
+
+record SkillCastResult(
+    ResultCode code,
+    SkillEvent skillEvent,
+    DamageEvent damageEvent) {
 }

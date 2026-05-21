@@ -22,6 +22,14 @@ final class FirstChainWebSocketHandler extends TextWebSocketHandler {
       session.sendMessage(new TextMessage(formatRegion(handleEnterRegion(payload))));
       return;
     }
+    if (payload.startsWith("SKILL ")) {
+      SkillCastResult result = handleSkill(payload);
+      session.sendMessage(new TextMessage(formatSkill(result)));
+      if (result.damageEvent() != null) {
+        session.sendMessage(new TextMessage(formatDamage(result.damageEvent())));
+      }
+      return;
+    }
     session.sendMessage(new TextMessage("type=ERROR code=BAD_REQUEST"));
   }
 
@@ -34,6 +42,14 @@ final class FirstChainWebSocketHandler extends TextWebSocketHandler {
   private EnterRegionResult handleEnterRegion(String payload) {
     String[] parts = payload.split("\\s+");
     return gatewayService.enterRegion(Long.parseLong(parts[1]), Integer.parseInt(parts[2]));
+  }
+
+  private SkillCastResult handleSkill(String payload) {
+    String[] parts = payload.split("\\s+");
+    return gatewayService.castSkill(
+        Long.parseLong(parts[1]),
+        Integer.parseInt(parts[2]),
+        new GridVector(Integer.parseInt(parts[3]), Integer.parseInt(parts[4])));
   }
 
   private String formatLogin(LoginResult result) {
@@ -55,5 +71,31 @@ final class FirstChainWebSocketHandler extends TextWebSocketHandler {
         + " self=" + selfId
         + " entities=" + result.entities().size()
         + " serverTick=" + result.serverTick();
+  }
+
+  private String formatSkill(SkillCastResult result) {
+    if (result.skillEvent() == null) {
+      return "type=SKILL_EVENT code=" + result.code();
+    }
+
+    SkillEvent event = result.skillEvent();
+    return "type=SKILL_EVENT"
+        + " code=" + result.code()
+        + " casterId=" + event.casterId()
+        + " skillId=" + event.skillId()
+        + " x=" + event.position().x()
+        + " y=" + event.position().y()
+        + " aimX=" + event.aimDir().x()
+        + " aimY=" + event.aimDir().y();
+  }
+
+  private String formatDamage(DamageEvent event) {
+    return "type=DAMAGE_EVENT"
+        + " code=OK"
+        + " sourceId=" + event.sourceId()
+        + " targetId=" + event.targetId()
+        + " skillId=" + event.skillId()
+        + " hpDelta=" + event.hpDelta()
+        + " dead=" + event.dead();
   }
 }

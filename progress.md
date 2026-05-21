@@ -10,8 +10,8 @@
 
 - 日期：2026-05-21
 - 分支：codex/wenjian-architecture
-- 工作区：后端 Maven 骨架、内存登录/进入区域链路、Unity `Proto_CombatField` 原型壳和临时客户端 WebSocket 验收已完成
-- 当前重点：以方案 C 继续推进前后端最小链路，下一步进入单技能意图、技能事件和 Unity 展示端落地。
+- 工作区：后端 Maven 骨架、内存登录/进入区域链路、Unity `Proto_CombatField` 原型壳、临时客户端 WebSocket 验收和单技能事件链路已完成
+- 当前重点：以方案 C 继续推进前后端最小链路，下一步进入最小单人秘境开始与结算闭环。
 
 ## 已完成
 
@@ -73,7 +73,9 @@
 - 已按 TDD 完成 WebSocket 登录与进入区域集成测试，`mvn -q -pl wenjian-gateway-ws -am test` 通过。
 - 已补齐 Spring Boot Maven 启动插件配置，并完成固定端口 `18080` 手动启动验收。
 - 已用 Node 原生 WebSocket 临时客户端验证 `LOGIN` 和 `ENTER_REGION`，服务端返回登录成功和区域快照。
-- 当前仍不能作为完整游戏试玩；下一步需要 Unity `Proto_CombatField` 真正连接后端并显示区域响应。
+- 已按 TDD 完成单技能链路，`SKILL 1000001 2001 1 0` 会返回 `SKILL_EVENT` 和对训练敌人的 `DAMAGE_EVENT`。
+- 已更新 Unity `Proto_CombatField` 的默认技能占位效果、受击反馈和可读性验收标准。
+- 当前仍不能作为完整游戏试玩；后续需要 Unity `Proto_CombatField` 真正连接后端并显示区域、技能和受击反馈。工程链路下一步进入最小单人秘境开始与结算闭环。
 
 ## 进行中
 
@@ -89,6 +91,7 @@
 - Unity `Proto_CombatField` 显示玩家、测试敌人和基础场景。
 - Unity 发送一个技能意图。
 - 后端返回技能事件或伤害事件。
+- Unity 技能占位效果的方向、遮挡和受击反馈规则已写入 `Proto_CombatField` 原型说明。
 - 最后验证单人秘境开始/结算的最小协议闭环。
 
 计划文档：`docs/plans/minimal-dual-track-chain-plan.md`
@@ -163,10 +166,10 @@
 
 ## 下一步建议
 
-1. 评审第二轮美术标准素材，确认是否可以作为 Unity 原型基准。
-2. 若通过，冻结第一版可执行美术标准，并拆分 Unity `Proto_CombatField` 最小素材需求。
-3. 规划后端 Maven 多模块骨架。
-4. 规划 Unity `Proto_CombatField` 原型任务。
+1. 执行 Task 8：最小单人秘境开始与结算闭环。
+2. 后续创建真实 Unity `Proto_CombatField` 工程或场景，接入登录、区域快照和单技能事件。
+3. 评审第二轮美术标准素材，确认是否冻结为 Unity 原型基准。
+4. 冻结后拆分 Sprite、Tilemap、VFX 和 HUD 占位资源需求。
 
 ## 当前骨架进展
 

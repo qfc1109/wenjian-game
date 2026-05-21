@@ -23,7 +23,7 @@ class FirstChainWebSocketIntegrationTest {
   private String contextPath;
 
   @Test
-  void websocketLoginAndEnterRegionReturnSnapshot() throws Exception {
+  void websocketLoginEnterRegionAndSkillReturnEvents() throws Exception {
     BlockingQueue<String> replies = new LinkedBlockingQueue<>();
     StandardWebSocketClient client = new StandardWebSocketClient();
     String uri = "ws://localhost:" + port + contextPath + "/ws/first-chain";
@@ -44,11 +44,25 @@ class FirstChainWebSocketIntegrationTest {
 
     session.sendMessage(new TextMessage("ENTER_REGION 1000001 1001"));
     String regionReply = replies.poll(5, TimeUnit.SECONDS);
-    session.close();
 
     assertTrue(regionReply.contains("type=REGION_SNAPSHOT"));
     assertTrue(regionReply.contains("regionId=1001"));
     assertTrue(regionReply.contains("self=1000001"));
     assertTrue(regionReply.contains("entities=2"));
+
+    session.sendMessage(new TextMessage("SKILL 1000001 2001 1 0"));
+    String skillReply = replies.poll(5, TimeUnit.SECONDS);
+    String damageReply = replies.poll(5, TimeUnit.SECONDS);
+    session.close();
+
+    assertTrue(skillReply.contains("type=SKILL_EVENT"));
+    assertTrue(skillReply.contains("casterId=1000001"));
+    assertTrue(skillReply.contains("skillId=2001"));
+    assertTrue(skillReply.contains("aimX=1"));
+    assertTrue(skillReply.contains("aimY=0"));
+    assertTrue(damageReply.contains("type=DAMAGE_EVENT"));
+    assertTrue(damageReply.contains("sourceId=1000001"));
+    assertTrue(damageReply.contains("targetId=2000001"));
+    assertTrue(damageReply.contains("hpDelta=-12"));
   }
 }

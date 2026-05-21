@@ -382,17 +382,23 @@ Known gap: this is still not a full Unity playable build. It proves the Java Web
 - Modify Unity prototype documentation or scripts after project exists.
 - Modify: `task_plan.md`
 
-- [ ] **Step 1: Add a failing test for one skill intent**
+- [x] **Step 1: Add a failing test for one skill intent**
 
 The first skill must use existing `config/source/skill.csv`, preferably `default_skill_id` from `player_template.csv`.
 
-- [ ] **Step 2: Implement one in-memory skill event**
+Verified RED on 2026-05-21: `mvn -q -pl wenjian-gateway-ws -am test` failed at test compile time because `SkillCastResult` and `GridVector` did not exist.
+
+- [x] **Step 2: Implement one in-memory skill event**
 
 The server returns a `SkillEvent` and optional `DamageEvent`; it does not calculate full combat balance.
 
-- [ ] **Step 3: Verify front-end readability**
+Implemented on 2026-05-21: `SKILL 1000001 2001 1 0` returns `SKILL_EVENT` and `DAMAGE_EVENT` using default skill `2001` and fixed training enemy `2000001`.
+
+- [x] **Step 3: Verify front-end readability**
 
 Unity or a documented visual check must confirm the VFX does not hide the player, enemies, or collision area.
+
+Documented on 2026-05-21 in `wenjian-client/Proto_CombatField/README.md`: the first skill must be a short directional sword-energy placeholder, must not cover the player body, enemy silhouette, health position, or collision area, and must make the skill direction readable from the screen.
 
 ### Task 8: Minimal Rogue Instance Closure
 
@@ -438,4 +444,4 @@ Stop and report after each of these:
 
 ## 8. Current Recommendation
 
-Execute Task 1 first, then stop for a short review. After Task 1 is committed, start Task 2 and Task 3 together only if their file ranges remain separate.
+Task 7 is complete for the current minimal text-protocol and documented Unity-readability scope. Next, execute Task 8 as a separate small closure: start a deterministic rogue instance from config, return a deterministic finish result, then record the closed loop.

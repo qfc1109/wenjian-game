@@ -23,7 +23,10 @@
 - 【✔】 Task 6 新增 Spring Boot WebSocket 最小入口、Handler 和固定路径 `/ws/first-chain` <2026-05-21 16:34>
 - 【✔】 Task 6 补齐 Spring Boot Maven 插件配置，修复 `spring-boot:run` 无法解析和父工程误启动问题 <2026-05-21 16:34>
 - 【✔】 Task 6 用 Node 原生 WebSocket 临时客户端完成登录和进入区域手动验收 <2026-05-21 16:34>
-- 【 】 下一步进入 Task 7：单技能意图、技能事件和 Unity 展示侧接入规划 <2026-05-21 16:34>
+- 【✔】 Task 7 按 TDD 新增单技能意图测试，RED 阶段确认缺少技能结果 DTO <2026-05-21 19:07>
+- 【✔】 Task 7 新增 `SKILL 1000001 2001 1 0` 文本调试协议，返回 `SKILL_EVENT` 和 `DAMAGE_EVENT` <2026-05-21 19:07>
+- 【✔】 Task 7 更新 Unity `Proto_CombatField` 单技能占位效果和可读性验收说明 <2026-05-21 19:07>
+- 【 】 下一步进入 Task 8：最小单人秘境开始与结算闭环 <2026-05-21 19:07>
 
 ### 验证记录
 
@@ -47,6 +50,11 @@
 - 【✔】 手动启动：`mvn -q -pl wenjian-gateway-ws -am test-compile spring-boot:run -Dspring-boot.run.fork=false -Dspring-boot.run.arguments=--server.port=18080` 可启动本地网关 <2026-05-21 16:34>
 - 【✔】 临时客户端验收：Node 原生 WebSocket 收到 `type=LOGIN_OK playerId=1000001 regionId=1001` 和 `type=REGION_SNAPSHOT regionId=1001 self=1000001 entities=2` <2026-05-21 16:34>
 - 【❓】 Windows PowerShell 自带 `ClientWebSocket` 对 Tomcat 返回的 `Connection: upgrade, keep-alive` 兼容性不佳，本轮改用 Node 原生 WebSocket 验收 <2026-05-21 16:34>
+- 【✔】 Task 7 基线：`mvn -q -pl wenjian-gateway-ws -am test` 通过，确认修改前网关测试可运行 <2026-05-21 19:07>
+- 【✔】 RED：`mvn -q -pl wenjian-gateway-ws -am test` 失败，原因是 `SkillCastResult` 和 `GridVector` 尚不存在 <2026-05-21 19:07>
+- 【✔】 GREEN：`mvn -q -pl wenjian-gateway-ws -am test` 通过，单技能服务测试和 WebSocket 集成测试均通过 <2026-05-21 19:07>
+- 【✔】 全量后端验证：`mvn -q test` 通过 <2026-05-21 19:11>
+- 【✔】 `git diff --check` 通过；仅出现 Windows LF/CRLF 换行转换提示 <2026-05-21 19:11>
 
 ### 文档修改
 
@@ -78,6 +86,14 @@
 | `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/WenjianGatewayWsApplication.java` | 新增 Spring Boot 应用入口。 | 删除该文件 |
 | `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainWebSocketConfig.java` | 新增 `/ws/first-chain` WebSocket 路由配置。 | 删除该文件 |
 | `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainWebSocketHandler.java` | 新增最小文本协议 Handler，转接登录和进入区域服务。 | 删除该文件 |
+| `wenjian-game-server/wenjian-gateway-ws/src/test/java/com/wenjian/gateway/ws/FirstChainGatewayServiceTest.java` | 原测试仅覆盖登录和进入区域；新增默认技能 `2001` 的单技能意图断言，要求返回技能事件和对训练敌人的伤害事件。 | 删除新增的 `castDefaultSkillReturnsSkillEventAndDamageEvent` 测试方法 |
+| `wenjian-game-server/wenjian-gateway-ws/src/test/java/com/wenjian/gateway/ws/FirstChainWebSocketIntegrationTest.java` | 原集成测试仅覆盖登录和进入区域；新增 `SKILL 1000001 2001 1 0` 断言，要求收到 `SKILL_EVENT` 和 `DAMAGE_EVENT`。 | 恢复测试名称和删除新增技能消息断言 |
+| `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/GatewayDtos.java` | 原 DTO 仅包含登录、实体和区域快照；新增 `GridVector`、`SkillEvent`、`DamageEvent`、`SkillCastResult`。 | 删除新增 record |
+| `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainGatewayService.java` | 原服务仅支持登录和进入区域；新增内存版 `castSkill`，对默认技能 `2001` 返回固定技能事件和 `-12` 伤害事件。 | 删除 `castSkill` 和相关技能常量，恢复训练敌人原内联值 |
+| `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainWebSocketHandler.java` | 原 Handler 仅识别 `LOGIN` 和 `ENTER_REGION`；新增 `SKILL` 消息解析和技能/伤害事件文本响应。 | 删除 `SKILL` 分支、`handleSkill`、`formatSkill` 和 `formatDamage` |
+| `wenjian-game-server/README.md` | 原临时协议只列出登录和进入区域；新增 `SKILL 1000001 2001 1 0` 说明。 | 删除新增 `SKILL` 调试消息说明 |
+| `wenjian-client/Proto_CombatField/README.md` | 原 Unity 原型只说明技能事件展示目标；新增默认技能 `2001` 的占位效果、受击反馈和可读性验收标准。 | 删除新增第一技能和可读性验收条目 |
+| `docs/plans/minimal-dual-track-chain-plan.md` | 原 Task 7 未完成；标记单技能测试、内存技能事件和文档化前端可读性验收完成。 | 恢复 Task 7 三个步骤为未完成并删除验证说明 |
 
 ## 2026-05-20 工作记录
 
@@ -101,10 +117,10 @@
 
 ## 当前阶段
 
-- 状态：第一阶段骨架初始化与前后端最小链路计划中
+- 状态：前后端最小链路推进中
 - 当前分支：codex/wenjian-architecture
-- 已完成：整体架构设计文档、客户端视觉方向首版、首批概念图、第一阶段实施计划、一级目录 README、protobuf 最小协议骨架、config 最小示例表、首批美术复盘、第二轮可执行美术标准素材、前后端并行最小链路计划
-- 下一步：执行方案 C 的 Task 1 检查；随后进入协议契约复查、后端 Maven 最小骨架和 Unity `Proto_CombatField` 原型壳。
+- 已完成：整体架构设计文档、客户端视觉方向首版、首批概念图、第一阶段实施计划、一级目录 README、protobuf 最小协议骨架、config 最小示例表、首批美术复盘、第二轮可执行美术标准素材、前后端并行最小链路计划、后端 Maven 骨架、WebSocket 登录/进入区域链路、Unity `Proto_CombatField` 原型壳、单技能事件链路
+- 下一步：进入 Task 8，做最小单人秘境开始与结算闭环。
 
 ## 阶段计划
 
@@ -134,8 +150,8 @@
 
 - 状态：进行中
 - 目标：创建一级目录、后端多模块骨架、协议目录、配置目录和客户端原型目录。
-- 已完成：一级目录 README、protobuf 最小协议骨架、config 最小示例表。
-- 下一步：按 `docs/plans/minimal-dual-track-chain-plan.md` 推进后端 Maven 最小骨架和 Unity `Proto_CombatField` 原型壳。
+- 已完成：一级目录 README、protobuf 最小协议骨架、config 最小示例表、后端 Maven 最小多模块骨架、Unity `Proto_CombatField` 原型壳、WebSocket 第一链路和单技能链路。
+- 下一步：按 `docs/plans/minimal-dual-track-chain-plan.md` 推进最小单人秘境闭环。
 
 ## 决策记录
 
@@ -178,5 +194,5 @@
 
 - 决策文档：`docs/project/next-stage-decision.md`
 - 当前路线：低风险双轨推进。
-- 已执行：生成首批 7 张概念美术图，完成首批复盘；生成第二轮 7 张可执行美术标准素材；完成一级目录、protobuf 和 config 最小骨架。
-- 下一步：评审第二轮美术标准，随后决定后端 Maven 骨架与 Unity 原型推进顺序。
+- 已执行：生成首批 7 张概念美术图，完成首批复盘；生成第二轮 7 张可执行美术标准素材；完成一级目录、protobuf、config、后端 Maven 骨架、WebSocket 第一链路和单技能链路。
+- 下一步：进入最小单人秘境开始与结算闭环，同时后续仍需用户评审第二轮美术标准是否冻结。
