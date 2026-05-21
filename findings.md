@@ -169,6 +169,27 @@
   - 第一网络目标是展示后端 `RegionSnapshot` 或等价进入区域响应。
 - 当前仍未创建完整 Unity 工程；这是原型壳和验收标准。
 
+## 2026-05-21 Task 6 WebSocket 第一联调验收记录
+
+- 已新增 Spring Boot 应用入口和 `/ws/first-chain` WebSocket 路由。
+- 已新增 WebSocket 集成测试，覆盖 `LOGIN local-dev-key 1700000000000` 和 `ENTER_REGION 1000001 1001`。
+- RED 阶段曾失败于缺少 `@SpringBootConfiguration`，说明测试先于 Spring Boot 应用入口生效。
+- GREEN 阶段 `mvn -q -pl wenjian-gateway-ws -am test` 通过。
+- 初次手动启动失败原因：项目未声明 `spring-boot-maven-plugin`，Maven 无法解析 `spring-boot:run` 前缀。
+- 补充插件后，`-pl wenjian-gateway-ws -am spring-boot:run` 又会让父聚合工程参与 Boot Run，父工程没有 main class。
+- 当前修正：父工程设置 `spring-boot.run.skip=true`，网关模块设置 `spring-boot.run.skip=false`，并在父工程管理 Spring Boot Maven 插件版本。
+- 当前推荐手动启动命令需要在 `wenjian-game-server` 下执行：
+
+```powershell
+mvn -q -pl wenjian-gateway-ws -am test-compile spring-boot:run -Dspring-boot.run.fork=false -Dspring-boot.run.arguments=--server.port=18080
+```
+
+- 临时客户端验收使用 Node 22 原生 WebSocket，已收到：
+  - `type=LOGIN_OK code=OK playerId=1000001 regionId=1001 x=10 y=12`
+  - `type=REGION_SNAPSHOT code=OK regionId=1001 self=1000001 entities=2 serverTick=1`
+- Windows PowerShell 自带 `ClientWebSocket` 对 Tomcat 返回的 `Connection: upgrade, keep-alive` 兼容性不佳，不作为本项目第一验收客户端。
+- 当前限制：本轮证明后端 WebSocket 链路和临时客户端可联通；仍未完成 Unity 可试玩画面。
+
 ## 外部资料线索
 
 - Unity 官方 Unity 6 支持页面显示 Unity 6.3 LTS 为当前 LTS，适合锁定生产版本，支持到 2027 年 12 月。

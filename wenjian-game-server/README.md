@@ -41,3 +41,17 @@ $env:MAVEN_HOME='E:\apache-maven-3.9.16'
 $env:Path="$env:JAVA_HOME\bin;$env:MAVEN_HOME\bin;$env:Path"
 mvn -q -DskipTests validate
 ```
+
+启动第一条 WebSocket 验收链路时，进入本目录后执行：
+
+```powershell
+$env:JAVA_HOME='E:\JAVA\jdk21'
+$env:MAVEN_HOME='E:\apache-maven-3.9.16'
+$env:Path="$env:JAVA_HOME\bin;$env:MAVEN_HOME\bin;$env:Path"
+mvn -q -pl wenjian-gateway-ws -am test-compile spring-boot:run -Dspring-boot.run.fork=false -Dspring-boot.run.arguments=--server.port=18080
+```
+
+当前临时 WebSocket 路径为 `ws://127.0.0.1:18080/ws/first-chain`。第一阶段文本调试消息：
+
+- `LOGIN local-dev-key 1700000000000`
+- `ENTER_REGION 1000001 1001`

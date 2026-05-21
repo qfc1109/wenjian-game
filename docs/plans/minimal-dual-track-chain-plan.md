@@ -324,21 +324,29 @@ Verified on 2026-05-21: `rg -n "48x48|32x32|竹林|RegionSnapshot|round2-visual-
 ### Task 6: First Front-End/Back-End Acceptance
 
 **Files:**
+- Create: `wenjian-game-server/wenjian-gateway-ws/src/test/java/com/wenjian/gateway/ws/FirstChainWebSocketIntegrationTest.java`
+- Create: `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/WenjianGatewayWsApplication.java`
+- Create: `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainWebSocketConfig.java`
+- Create: `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainWebSocketHandler.java`
+- Modify: `wenjian-game-server/pom.xml`
+- Modify: `wenjian-game-server/wenjian-gateway-ws/pom.xml`
 - Modify after implementation: `task_plan.md`
 - Modify after implementation: `progress.md`
 - Modify after implementation: `findings.md`
 
-- [ ] **Step 1: Start the back-end gateway**
+- [x] **Step 1: Start the back-end gateway**
 
-Run:
+Run from `wenjian-game-server`:
 
 ```powershell
-mvn -pl wenjian-game-server/wenjian-gateway-ws -am spring-boot:run
+mvn -q -pl wenjian-gateway-ws -am test-compile spring-boot:run -Dspring-boot.run.fork=false -Dspring-boot.run.arguments=--server.port=18080
 ```
 
 Expected: local WebSocket gateway starts and logs the listening port.
 
-- [ ] **Step 2: Verify the first client interaction**
+Verified on 2026-05-21: local WebSocket gateway started on port `18080`.
+
+- [x] **Step 2: Verify the first client interaction**
 
 Use either a Unity client or a temporary WebSocket test client to send login and enter-region messages.
 
@@ -348,7 +356,12 @@ Expected:
 - enter-region response contains a region snapshot.
 - player position matches `config/source/player_template.csv`.
 
-- [ ] **Step 3: Record acceptance**
+Verified on 2026-05-21 with Node 22 native WebSocket:
+
+- `LOGIN local-dev-key 1700000000000` returned `type=LOGIN_OK`, `playerId=1000001`, `regionId=1001`, `x=10`, `y=12`.
+- `ENTER_REGION 1000001 1001` returned `type=REGION_SNAPSHOT`, `regionId=1001`, `self=1000001`, `entities=2`, `serverTick=1`.
+
+- [x] **Step 3: Record acceptance**
 
 Update `task_plan.md` with:
 
@@ -356,6 +369,10 @@ Update `task_plan.md` with:
 - result.
 - known gap.
 - next action.
+
+Recorded on 2026-05-21 in `task_plan.md`, `progress.md`, and `findings.md`.
+
+Known gap: this is still not a full Unity playable build. It proves the Java WebSocket gateway and a temporary client can complete the first login/enter-region chain.
 
 ### Task 7: Single Skill Chain
 

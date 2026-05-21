@@ -19,7 +19,11 @@
 - 【✔】 Task 4 按 TDD 新增登录与进入区域最小链路测试，RED 阶段确认缺少实现类型 <2026-05-21 15:38>
 - 【✔】 Task 4 新增最小内存实现，GREEN 阶段网关模块测试通过 <2026-05-21 15:38>
 - 【✔】 Task 5 创建 Unity `Proto_CombatField` 原型壳说明和 ArtReference 引用目录 <2026-05-21 15:38>
-- 【 】 下一步进入 Task 6：用临时客户端或 Unity 原型验证登录/进入区域响应展示 <2026-05-21 15:38>
+- 【✔】 Task 6 按 TDD 新增 WebSocket 登录/进入区域集成测试，RED 阶段确认缺少 Spring Boot 启动配置 <2026-05-21 16:34>
+- 【✔】 Task 6 新增 Spring Boot WebSocket 最小入口、Handler 和固定路径 `/ws/first-chain` <2026-05-21 16:34>
+- 【✔】 Task 6 补齐 Spring Boot Maven 插件配置，修复 `spring-boot:run` 无法解析和父工程误启动问题 <2026-05-21 16:34>
+- 【✔】 Task 6 用 Node 原生 WebSocket 临时客户端完成登录和进入区域手动验收 <2026-05-21 16:34>
+- 【 】 下一步进入 Task 7：单技能意图、技能事件和 Unity 展示侧接入规划 <2026-05-21 16:34>
 
 ### 验证记录
 
@@ -38,6 +42,11 @@
 - 【✔】 GREEN：`mvn -q -pl wenjian-gateway-ws -am test` 再次执行通过 <2026-05-21 15:38>
 - 【❓】 第一链路当前还不能试玩游戏，只能证明后端最小登录/进入区域行为；试玩需要 Unity `Proto_CombatField` 原型壳和客户端连接展示 <2026-05-21 15:38>
 - 【✔】 `rg -n "48x48|32x32|竹林|RegionSnapshot|round2-visual-standards" wenjian-client/Proto_CombatField wenjian-client/README.md` 已执行，原型壳约束存在 <2026-05-21 15:38>
+- 【✔】 RED：`mvn -q -pl wenjian-gateway-ws -am test` 曾因缺少 `@SpringBootConfiguration` 失败，验证 WebSocket 集成测试先于实现生效 <2026-05-21 16:34>
+- 【✔】 GREEN：`mvn -q -pl wenjian-gateway-ws -am test` 通过，随机端口 Spring Boot WebSocket 集成测试完成登录和进入区域断言 <2026-05-21 16:34>
+- 【✔】 手动启动：`mvn -q -pl wenjian-gateway-ws -am test-compile spring-boot:run -Dspring-boot.run.fork=false -Dspring-boot.run.arguments=--server.port=18080` 可启动本地网关 <2026-05-21 16:34>
+- 【✔】 临时客户端验收：Node 原生 WebSocket 收到 `type=LOGIN_OK playerId=1000001 regionId=1001` 和 `type=REGION_SNAPSHOT regionId=1001 self=1000001 entities=2` <2026-05-21 16:34>
+- 【❓】 Windows PowerShell 自带 `ClientWebSocket` 对 Tomcat 返回的 `Connection: upgrade, keep-alive` 兼容性不佳，本轮改用 Node 原生 WebSocket 验收 <2026-05-21 16:34>
 
 ### 文档修改
 
@@ -63,6 +72,12 @@
 | `wenjian-client/Proto_CombatField/README.md` | 新增 Unity 第一阶段原型壳说明与验收标准。 | 删除该文件 |
 | `wenjian-client/Proto_CombatField/ArtReference/README.md` | 新增第二轮美术标准引用说明。 | 删除该文件 |
 | `wenjian-client/README.md` | 补充第二轮美术标准和 `Proto_CombatField` 原型壳说明。 | 移除对应新增条目 |
+| `wenjian-game-server/pom.xml` | 新增 Spring Boot Maven 插件版本管理，并让父工程和库模块默认跳过 `spring-boot:run`。 | 移除 `spring-boot.run.skip` 属性和 `spring-boot-maven-plugin` 插件管理项 |
+| `wenjian-game-server/wenjian-gateway-ws/pom.xml` | 打开网关模块 `spring-boot:run`，声明 Spring Boot Maven 插件。 | 移除 `spring-boot.run.skip=false` 和插件声明 |
+| `wenjian-game-server/wenjian-gateway-ws/src/test/java/com/wenjian/gateway/ws/FirstChainWebSocketIntegrationTest.java` | 新增 WebSocket 集成测试，验证登录和进入区域响应。 | 删除该测试文件 |
+| `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/WenjianGatewayWsApplication.java` | 新增 Spring Boot 应用入口。 | 删除该文件 |
+| `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainWebSocketConfig.java` | 新增 `/ws/first-chain` WebSocket 路由配置。 | 删除该文件 |
+| `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainWebSocketHandler.java` | 新增最小文本协议 Handler，转接登录和进入区域服务。 | 删除该文件 |
 
 ## 2026-05-20 工作记录
 
