@@ -408,17 +408,23 @@ Documented on 2026-05-21 in `wenjian-client/Proto_CombatField/README.md`: the fi
 - Modify: `task_plan.md`
 - Modify: `progress.md`
 
-- [ ] **Step 1: Start rogue instance from config**
+- [x] **Step 1: Start rogue instance from config**
 
 Use `config/source/rogue.csv`, `monster.csv`, and `reward_pool.csv`.
 
-- [ ] **Step 2: Return deterministic finish result**
+Implemented on 2026-05-21: `START_ROGUE 1000001 4001` returns `ROGUE_START` with instance `9000001`, map `2001`, spawn `1500,1500`, monster `3001 x 8`, reward pool `5001`, and 9 snapshot entities.
+
+- [x] **Step 2: Return deterministic finish result**
 
 The first finish result can be deterministic and config-driven. Do not implement random room generation in this task.
 
-- [ ] **Step 3: Record the closed loop**
+Implemented on 2026-05-21: `FINISH_ROGUE 1000001 9000001` returns `ROGUE_FINISH` with reward `itemId=6001 count=3`. The in-memory gateway now requires the instance to be started before it can be finished.
+
+- [x] **Step 3: Record the closed loop**
 
 Update progress once login, enter region, skill event, and rogue finish are all demonstrated.
+
+Recorded on 2026-05-21 in `task_plan.md`, `progress.md`, and `findings.md`. WebSocket integration now covers login, enter region, skill, rogue start, and rogue finish in one deterministic chain.
 
 ## 6. Progress Logging Rules
 
@@ -444,4 +450,4 @@ Stop and report after each of these:
 
 ## 8. Current Recommendation
 
-Task 7 is complete for the current minimal text-protocol and documented Unity-readability scope. Next, execute Task 8 as a separate small closure: start a deterministic rogue instance from config, return a deterministic finish result, then record the closed loop.
+Task 8 is complete for the current minimal text-protocol scope. The next engineering step should be either pushing the current local branch after user acceptance, or opening a new module for Unity `Proto_CombatField` to consume the WebSocket chain.

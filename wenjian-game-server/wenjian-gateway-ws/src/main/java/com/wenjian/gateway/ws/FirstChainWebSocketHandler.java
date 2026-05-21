@@ -30,6 +30,14 @@ final class FirstChainWebSocketHandler extends TextWebSocketHandler {
       }
       return;
     }
+    if (payload.startsWith("START_ROGUE ")) {
+      session.sendMessage(new TextMessage(formatRogueStart(handleStartRogue(payload))));
+      return;
+    }
+    if (payload.startsWith("FINISH_ROGUE ")) {
+      session.sendMessage(new TextMessage(formatRogueFinish(handleFinishRogue(payload))));
+      return;
+    }
     session.sendMessage(new TextMessage("type=ERROR code=BAD_REQUEST"));
   }
 
@@ -50,6 +58,16 @@ final class FirstChainWebSocketHandler extends TextWebSocketHandler {
         Long.parseLong(parts[1]),
         Integer.parseInt(parts[2]),
         new GridVector(Integer.parseInt(parts[3]), Integer.parseInt(parts[4])));
+  }
+
+  private RogueStartResult handleStartRogue(String payload) {
+    String[] parts = payload.split("\\s+");
+    return gatewayService.startRogue(Long.parseLong(parts[1]), Integer.parseInt(parts[2]));
+  }
+
+  private RogueFinishResult handleFinishRogue(String payload) {
+    String[] parts = payload.split("\\s+");
+    return gatewayService.finishRogue(Long.parseLong(parts[1]), Long.parseLong(parts[2]));
   }
 
   private String formatLogin(LoginResult result) {
@@ -97,5 +115,38 @@ final class FirstChainWebSocketHandler extends TextWebSocketHandler {
         + " skillId=" + event.skillId()
         + " hpDelta=" + event.hpDelta()
         + " dead=" + event.dead();
+  }
+
+  private String formatRogueStart(RogueStartResult result) {
+    if (result.code() != ResultCode.OK) {
+      return "type=ROGUE_START code=" + result.code();
+    }
+
+    return "type=ROGUE_START"
+        + " code=" + result.code()
+        + " playerId=" + result.playerId()
+        + " rogueId=" + result.rogueId()
+        + " instanceId=" + result.instanceId()
+        + " mapId=" + result.mapId()
+        + " x=" + result.spawnPosition().x()
+        + " y=" + result.spawnPosition().y()
+        + " monsterId=" + result.monsterId()
+        + " monsters=" + result.monsterCount()
+        + " rewardPoolId=" + result.rewardPoolId()
+        + " entities=" + result.entities().size();
+  }
+
+  private String formatRogueFinish(RogueFinishResult result) {
+    if (result.code() != ResultCode.OK) {
+      return "type=ROGUE_FINISH code=" + result.code();
+    }
+
+    RewardItem reward = result.rewards().getFirst();
+    return "type=ROGUE_FINISH"
+        + " code=" + result.code()
+        + " instanceId=" + result.instanceId()
+        + " success=" + result.success()
+        + " itemId=" + reward.itemId()
+        + " count=" + reward.count();
   }
 }

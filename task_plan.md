@@ -26,7 +26,10 @@
 - 【✔】 Task 7 按 TDD 新增单技能意图测试，RED 阶段确认缺少技能结果 DTO <2026-05-21 19:07>
 - 【✔】 Task 7 新增 `SKILL 1000001 2001 1 0` 文本调试协议，返回 `SKILL_EVENT` 和 `DAMAGE_EVENT` <2026-05-21 19:07>
 - 【✔】 Task 7 更新 Unity `Proto_CombatField` 单技能占位效果和可读性验收说明 <2026-05-21 19:07>
-- 【 】 下一步进入 Task 8：最小单人秘境开始与结算闭环 <2026-05-21 19:07>
+- 【✔】 Task 8 按 TDD 新增单人秘境开始与结算测试，RED 阶段确认缺少 Rogue DTO 和服务方法 <2026-05-21 20:12>
+- 【✔】 Task 8 新增 `START_ROGUE 1000001 4001` 和 `FINISH_ROGUE 1000001 9000001` 文本调试协议 <2026-05-21 20:12>
+- 【✔】 Task 8 增加最小内存实例状态，要求秘境实例启动后才能结算，结算后关闭实例 <2026-05-21 20:12>
+- 【 】 下一步等待验收；验收通过后提交并推送当前分支 <2026-05-21 20:12>
 
 ### 验证记录
 
@@ -55,6 +58,14 @@
 - 【✔】 GREEN：`mvn -q -pl wenjian-gateway-ws -am test` 通过，单技能服务测试和 WebSocket 集成测试均通过 <2026-05-21 19:07>
 - 【✔】 全量后端验证：`mvn -q test` 通过 <2026-05-21 19:11>
 - 【✔】 `git diff --check` 通过；仅出现 Windows LF/CRLF 换行转换提示 <2026-05-21 19:11>
+- 【✔】 Task 8 基线：`mvn -q -pl wenjian-gateway-ws -am test` 通过，确认修改前网关测试可运行 <2026-05-21 20:07>
+- 【✔】 RED：`mvn -q -pl wenjian-gateway-ws -am test` 失败，原因是 `RogueStartResult`、`RogueFinishResult` 和 `startRogue` 尚不存在 <2026-05-21 20:07>
+- 【✔】 GREEN：`mvn -q -pl wenjian-gateway-ws -am test` 通过，单人秘境服务测试和 WebSocket 集成测试均通过 <2026-05-21 20:12>
+- 【✔】 状态约束 RED：`mvn -q -pl wenjian-gateway-ws -am '-Dtest=FirstChainGatewayServiceTest' '-Dsurefire.failIfNoSpecifiedTests=false' test` 失败，未启动实例时结算仍返回 `OK` <2026-05-21 20:12>
+- 【✔】 状态约束 GREEN：`mvn -q -pl wenjian-gateway-ws -am '-Dtest=FirstChainGatewayServiceTest' '-Dsurefire.failIfNoSpecifiedTests=false' test` 通过 <2026-05-21 20:12>
+- 【❓】 测试命令探索：直接在父工程使用未转义 `-Dsurefire.failIfNoSpecifiedTests=false` 会被 PowerShell 拆坏；进入模块单跑又缺少 reactor 兄弟模块依赖，后续使用父工程 reactor + 引号包裹 `-D` 属性 <2026-05-21 20:12>
+- 【✔】 Task 8 全量后端验证：`mvn -q test` 通过 <2026-05-21 20:15>
+- 【✔】 Task 8 `git diff --check` 通过；仅出现 Windows LF/CRLF 换行转换提示 <2026-05-21 20:15>
 
 ### 文档修改
 
@@ -94,6 +105,13 @@
 | `wenjian-game-server/README.md` | 原临时协议只列出登录和进入区域；新增 `SKILL 1000001 2001 1 0` 说明。 | 删除新增 `SKILL` 调试消息说明 |
 | `wenjian-client/Proto_CombatField/README.md` | 原 Unity 原型只说明技能事件展示目标；新增默认技能 `2001` 的占位效果、受击反馈和可读性验收标准。 | 删除新增第一技能和可读性验收条目 |
 | `docs/plans/minimal-dual-track-chain-plan.md` | 原 Task 7 未完成；标记单技能测试、内存技能事件和文档化前端可读性验收完成。 | 恢复 Task 7 三个步骤为未完成并删除验证说明 |
+| `wenjian-game-server/wenjian-gateway-ws/src/test/java/com/wenjian/gateway/ws/FirstChainGatewayServiceTest.java` | 原测试覆盖登录、进入区域和单技能；新增秘境启动、秘境结算、未启动不可结算三个服务测试。 | 删除新增的 Task 8 测试方法 |
+| `wenjian-game-server/wenjian-gateway-ws/src/test/java/com/wenjian/gateway/ws/FirstChainWebSocketIntegrationTest.java` | 原集成测试覆盖登录、进入区域和单技能；新增 `START_ROGUE 1000001 4001` 和 `FINISH_ROGUE 1000001 9000001` 断言。 | 删除新增秘境消息断言，恢复测试名称 |
+| `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/GatewayDtos.java` | 原 DTO 仅包含登录、区域、技能和伤害事件；新增 `RogueStartResult`、`RewardItem`、`RogueFinishResult`。 | 删除新增 rogue record |
+| `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainGatewayService.java` | 原服务不支持秘境；新增内存版 `startRogue`/`finishRogue`，使用固定秘境 `4001`、实例 `9000001`、地图 `2001`、怪物 `3001 x 8`、奖励 `6001 x 3`，并要求启动后才能结算。 | 删除 rogue 常量、`activeRogueInstanceId`、`startRogue` 和 `finishRogue` |
+| `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainWebSocketHandler.java` | 原 Handler 不识别秘境消息；新增 `START_ROGUE`、`FINISH_ROGUE` 解析和 `ROGUE_START`、`ROGUE_FINISH` 文本响应格式化。 | 删除新增秘境分支、处理方法和格式化方法 |
+| `wenjian-game-server/README.md` | 原临时协议只列出登录、进入区域和技能；新增秘境开始/结算调试消息与固定配置说明。 | 删除新增 `START_ROGUE`/`FINISH_ROGUE` 说明 |
+| `docs/plans/minimal-dual-track-chain-plan.md` | 原 Task 8 未完成；标记秘境启动、确定性结算和闭环记录完成，并更新下一步建议。 | 恢复 Task 8 三个步骤为未完成，恢复当前推荐说明 |
 
 ## 2026-05-20 工作记录
 

@@ -62,3 +62,28 @@ record SkillCastResult(
     SkillEvent skillEvent,
     DamageEvent damageEvent) {
 }
+
+record RogueStartResult(
+    ResultCode code,
+    long playerId,
+    int rogueId,
+    long instanceId,
+    int mapId,
+    GridPosition spawnPosition,
+    int monsterId,
+    int monsterCount,
+    int rewardPoolId,
+    List<EntitySnapshot> entities) {
+}
+
+record RewardItem(
+    int itemId,
+    int count) {
+}
+
+record RogueFinishResult(
+    ResultCode code,
+    long instanceId,
+    boolean success,
+    List<RewardItem> rewards) {
+}

@@ -23,7 +23,7 @@ class FirstChainWebSocketIntegrationTest {
   private String contextPath;
 
   @Test
-  void websocketLoginEnterRegionAndSkillReturnEvents() throws Exception {
+  void websocketLoginEnterRegionSkillAndRogueReturnEvents() throws Exception {
     BlockingQueue<String> replies = new LinkedBlockingQueue<>();
     StandardWebSocketClient client = new StandardWebSocketClient();
     String uri = "ws://localhost:" + port + contextPath + "/ws/first-chain";
@@ -53,7 +53,6 @@ class FirstChainWebSocketIntegrationTest {
     session.sendMessage(new TextMessage("SKILL 1000001 2001 1 0"));
     String skillReply = replies.poll(5, TimeUnit.SECONDS);
     String damageReply = replies.poll(5, TimeUnit.SECONDS);
-    session.close();
 
     assertTrue(skillReply.contains("type=SKILL_EVENT"));
     assertTrue(skillReply.contains("casterId=1000001"));
@@ -64,5 +63,30 @@ class FirstChainWebSocketIntegrationTest {
     assertTrue(damageReply.contains("sourceId=1000001"));
     assertTrue(damageReply.contains("targetId=2000001"));
     assertTrue(damageReply.contains("hpDelta=-12"));
+
+    session.sendMessage(new TextMessage("START_ROGUE 1000001 4001"));
+    String rogueStartReply = replies.poll(5, TimeUnit.SECONDS);
+
+    assertTrue(rogueStartReply.contains("type=ROGUE_START"));
+    assertTrue(rogueStartReply.contains("playerId=1000001"));
+    assertTrue(rogueStartReply.contains("rogueId=4001"));
+    assertTrue(rogueStartReply.contains("instanceId=9000001"));
+    assertTrue(rogueStartReply.contains("mapId=2001"));
+    assertTrue(rogueStartReply.contains("x=1500"));
+    assertTrue(rogueStartReply.contains("y=1500"));
+    assertTrue(rogueStartReply.contains("monsterId=3001"));
+    assertTrue(rogueStartReply.contains("monsters=8"));
+    assertTrue(rogueStartReply.contains("rewardPoolId=5001"));
+    assertTrue(rogueStartReply.contains("entities=9"));
+
+    session.sendMessage(new TextMessage("FINISH_ROGUE 1000001 9000001"));
+    String rogueFinishReply = replies.poll(5, TimeUnit.SECONDS);
+    session.close();
+
+    assertTrue(rogueFinishReply.contains("type=ROGUE_FINISH"));
+    assertTrue(rogueFinishReply.contains("instanceId=9000001"));
+    assertTrue(rogueFinishReply.contains("success=true"));
+    assertTrue(rogueFinishReply.contains("itemId=6001"));
+    assertTrue(rogueFinishReply.contains("count=3"));
   }
 }

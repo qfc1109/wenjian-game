@@ -56,5 +56,9 @@ mvn -q -pl wenjian-gateway-ws -am test-compile spring-boot:run -Dspring-boot.run
 - `LOGIN local-dev-key 1700000000000`
 - `ENTER_REGION 1000001 1001`
 - `SKILL 1000001 2001 1 0`
+- `START_ROGUE 1000001 4001`
+- `FINISH_ROGUE 1000001 9000001`
 
 `SKILL` 调试消息当前使用 `config/source/player_template.csv` 中的默认技能 `2001`，对应 `config/source/skill.csv` 的首个剑气技能。服务端会返回一个 `SKILL_EVENT`，并在命中训练敌人时追加一个 `DAMAGE_EVENT`。
+
+`START_ROGUE` 调试消息当前使用 `config/source/rogue.csv` 中的默认秘境 `4001`，返回固定实例 `9000001`、地图 `2001`、出生点 `1500,1500`、怪物 `3001 x 8` 和奖励池 `5001`。`FINISH_ROGUE` 会在该实例已启动时返回 `ROGUE_FINISH`，并按 `config/source/reward_pool.csv` 返回固定奖励 `itemId=6001 count=3`。

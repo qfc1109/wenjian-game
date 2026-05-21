@@ -60,4 +60,51 @@ class FirstChainGatewayServiceTest {
     assertEquals(-12, result.damageEvent().hpDelta());
     assertFalse(result.damageEvent().dead());
   }
+
+  @Test
+  void startRogueReturnsDeterministicConfigDrivenInstance() {
+    FirstChainGatewayService gateway = FirstChainGatewayService.createDefault();
+    LoginResult login = gateway.login("local-dev-key", 1_700_000_000_000L);
+
+    RogueStartResult result = gateway.startRogue(login.playerId(), 4001);
+
+    assertEquals(ResultCode.OK, result.code());
+    assertEquals(login.playerId(), result.playerId());
+    assertEquals(4001, result.rogueId());
+    assertEquals(9_000_001L, result.instanceId());
+    assertEquals(2001, result.mapId());
+    assertEquals(new GridPosition(1500, 1500), result.spawnPosition());
+    assertEquals(3001, result.monsterId());
+    assertEquals(8, result.monsterCount());
+    assertEquals(5001, result.rewardPoolId());
+    assertEquals(9, result.entities().size());
+  }
+
+  @Test
+  void finishRogueReturnsDeterministicReward() {
+    FirstChainGatewayService gateway = FirstChainGatewayService.createDefault();
+    LoginResult login = gateway.login("local-dev-key", 1_700_000_000_000L);
+    RogueStartResult start = gateway.startRogue(login.playerId(), 4001);
+
+    RogueFinishResult result = gateway.finishRogue(login.playerId(), start.instanceId());
+
+    assertEquals(ResultCode.OK, result.code());
+    assertEquals(start.instanceId(), result.instanceId());
+    assertTrue(result.success());
+    assertEquals(1, result.rewards().size());
+    assertEquals(6001, result.rewards().getFirst().itemId());
+    assertEquals(3, result.rewards().getFirst().count());
+  }
+
+  @Test
+  void finishRogueWithoutStartedInstanceReturnsNotFound() {
+    FirstChainGatewayService gateway = FirstChainGatewayService.createDefault();
+    LoginResult login = gateway.login("local-dev-key", 1_700_000_000_000L);
+
+    RogueFinishResult result = gateway.finishRogue(login.playerId(), 9_000_001L);
+
+    assertEquals(ResultCode.NOT_FOUND, result.code());
+    assertFalse(result.success());
+    assertTrue(result.rewards().isEmpty());
+  }
 }

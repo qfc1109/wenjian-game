@@ -10,8 +10,8 @@
 
 - 日期：2026-05-21
 - 分支：codex/wenjian-architecture
-- 工作区：后端 Maven 骨架、内存登录/进入区域链路、Unity `Proto_CombatField` 原型壳、临时客户端 WebSocket 验收和单技能事件链路已完成
-- 当前重点：以方案 C 继续推进前后端最小链路，下一步进入最小单人秘境开始与结算闭环。
+- 工作区：后端 Maven 骨架、内存登录/进入区域链路、Unity `Proto_CombatField` 原型壳、临时客户端 WebSocket 验收、单技能事件链路和最小单人秘境开始/结算闭环已完成
+- 当前重点：等待 Task 8 验收；验收通过后提交并推送 `codex/wenjian-architecture`。
 
 ## 已完成
 
@@ -75,7 +75,8 @@
 - 已用 Node 原生 WebSocket 临时客户端验证 `LOGIN` 和 `ENTER_REGION`，服务端返回登录成功和区域快照。
 - 已按 TDD 完成单技能链路，`SKILL 1000001 2001 1 0` 会返回 `SKILL_EVENT` 和对训练敌人的 `DAMAGE_EVENT`。
 - 已更新 Unity `Proto_CombatField` 的默认技能占位效果、受击反馈和可读性验收标准。
-- 当前仍不能作为完整游戏试玩；后续需要 Unity `Proto_CombatField` 真正连接后端并显示区域、技能和受击反馈。工程链路下一步进入最小单人秘境开始与结算闭环。
+- 已按 TDD 完成最小单人秘境开始与结算闭环，`START_ROGUE 1000001 4001` 会返回 `ROGUE_START`，`FINISH_ROGUE 1000001 9000001` 会返回 `ROGUE_FINISH` 和固定奖励。
+- 当前仍不能作为完整游戏试玩；后续需要 Unity `Proto_CombatField` 真正连接后端并显示区域、技能、受击反馈和秘境结算结果。
 
 ## 进行中
 
@@ -92,7 +93,7 @@
 - Unity 发送一个技能意图。
 - 后端返回技能事件或伤害事件。
 - Unity 技能占位效果的方向、遮挡和受击反馈规则已写入 `Proto_CombatField` 原型说明。
-- 最后验证单人秘境开始/结算的最小协议闭环。
+- 后端已验证单人秘境开始/结算的最小协议闭环。
 
 计划文档：`docs/plans/minimal-dual-track-chain-plan.md`
 

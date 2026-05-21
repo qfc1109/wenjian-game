@@ -214,6 +214,33 @@ mvn -q -pl wenjian-gateway-ws -am test-compile spring-boot:run -Dspring-boot.run
 - 空白检查：`git diff --check` 通过；仅出现 Windows LF/CRLF 换行转换提示。
 - 当前限制：仍未创建真实 Unity 工程或脚本，本轮的前端验收是文档化约束；后端技能计算仍是内存固定事件，不代表完整战斗平衡或命中判定。
 
+## 2026-05-21 Task 8 最小单人秘境闭环记录
+
+- 已按 TDD 新增秘境开始与结算测试。
+- RED 阶段命令：`mvn -q -pl wenjian-gateway-ws -am test`。
+- RED 阶段结果：测试编译失败，原因是 `RogueStartResult`、`RogueFinishResult` 和 `startRogue` 尚不存在。
+- 已实现最小内存秘境链路：
+  - 使用 `config/source/rogue.csv` 中的默认秘境 `4001`。
+  - 使用 `config/source/monster.csv` 中的怪物 `3001` 和血量 `60`。
+  - 使用 `config/source/reward_pool.csv` 中的奖励 `itemId=6001 count=3`。
+  - `startRogue(1000001, 4001)` 返回固定实例 `9000001`、地图 `2001`、出生点 `1500,1500`、怪物 `3001 x 8`、奖励池 `5001` 和 9 个快照实体。
+  - `finishRogue(1000001, 9000001)` 在实例已启动时返回成功结算和固定奖励。
+  - 未启动实例时调用 `finishRogue` 返回 `NOT_FOUND`，避免单独结算也能领奖。
+- 已扩展临时 WebSocket 文本协议：
+  - 请求：`START_ROGUE 1000001 4001`
+  - 响应：`ROGUE_START`
+  - 请求：`FINISH_ROGUE 1000001 9000001`
+  - 响应：`ROGUE_FINISH`
+- GREEN 阶段命令：`mvn -q -pl wenjian-gateway-ws -am test`。
+- GREEN 阶段结果：通过。
+- 状态约束单测命令：`mvn -q -pl wenjian-gateway-ws -am '-Dtest=FirstChainGatewayServiceTest' '-Dsurefire.failIfNoSpecifiedTests=false' test`。
+- 状态约束结果：通过。
+- 全量验证命令：`mvn -q test`。
+- 全量验证结果：通过。
+- 空白检查：`git diff --check` 通过；仅出现 Windows LF/CRLF 换行转换提示。
+- 命令行注意：PowerShell 中带点号的 Maven `-D` 属性需要引号包裹；直接进入 `wenjian-gateway-ws` 单跑测试会因未安装 reactor 兄弟模块而无法解析依赖。
+- 当前限制：秘境仍是固定内存实例，没有随机房间生成、正式配置加载、怪物击杀条件、掉落概率、持久化写回或 Unity 结算 UI。
+
 ## 外部资料线索
 
 - Unity 官方 Unity 6 支持页面显示 Unity 6.3 LTS 为当前 LTS，适合锁定生产版本，支持到 2027 年 12 月。
