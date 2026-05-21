@@ -18,7 +18,8 @@
 - 【✔】 后端 Maven 骨架 `mvn -q -DskipTests validate` 验证通过 <2026-05-21 12:05>
 - 【✔】 Task 4 按 TDD 新增登录与进入区域最小链路测试，RED 阶段确认缺少实现类型 <2026-05-21 15:38>
 - 【✔】 Task 4 新增最小内存实现，GREEN 阶段网关模块测试通过 <2026-05-21 15:38>
-- 【 】 下一步进入 Task 5：Unity `Proto_CombatField` 原型壳，第一链路完成后才能开始试玩级验证 <2026-05-21 15:38>
+- 【✔】 Task 5 创建 Unity `Proto_CombatField` 原型壳说明和 ArtReference 引用目录 <2026-05-21 15:38>
+- 【 】 下一步进入 Task 6：用临时客户端或 Unity 原型验证登录/进入区域响应展示 <2026-05-21 15:38>
 
 ### 验证记录
 
@@ -36,6 +37,7 @@
 - 【✔】 RED：`mvn -q -pl wenjian-gateway-ws -am test` 首次执行失败，原因是 `FirstChainGatewayService` 和 DTO 类型不存在 <2026-05-21 15:38>
 - 【✔】 GREEN：`mvn -q -pl wenjian-gateway-ws -am test` 再次执行通过 <2026-05-21 15:38>
 - 【❓】 第一链路当前还不能试玩游戏，只能证明后端最小登录/进入区域行为；试玩需要 Unity `Proto_CombatField` 原型壳和客户端连接展示 <2026-05-21 15:38>
+- 【✔】 `rg -n "48x48|32x32|竹林|RegionSnapshot|round2-visual-standards" wenjian-client/Proto_CombatField wenjian-client/README.md` 已执行，原型壳约束存在 <2026-05-21 15:38>
 
 ### 文档修改
 
@@ -58,6 +60,9 @@
 | `wenjian-game-server/wenjian-gateway-ws/src/test/java/com/wenjian/gateway/ws/FirstChainGatewayServiceTest.java` | 新增登录与进入区域最小链路测试。 | 删除该测试文件 |
 | `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainGatewayService.java` | 新增内存版登录与进入区域服务。 | 删除该实现文件 |
 | `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/GatewayDtos.java` | 新增最小链路 DTO 和枚举。 | 删除该实现文件 |
+| `wenjian-client/Proto_CombatField/README.md` | 新增 Unity 第一阶段原型壳说明与验收标准。 | 删除该文件 |
+| `wenjian-client/Proto_CombatField/ArtReference/README.md` | 新增第二轮美术标准引用说明。 | 删除该文件 |
+| `wenjian-client/README.md` | 补充第二轮美术标准和 `Proto_CombatField` 原型壳说明。 | 移除对应新增条目 |
 
 ## 2026-05-20 工作记录
 

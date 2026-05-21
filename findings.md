@@ -156,6 +156,19 @@
 - GREEN 阶段结果：通过。
 - 当前限制：该链路还不是可试玩游戏，只能作为后端最小行为验证。试玩需要 Unity `Proto_CombatField` 原型壳、场景、输入和客户端连接展示。
 
+## 2026-05-21 Task 5 Unity 原型壳记录
+
+- 已创建 `wenjian-client/Proto_CombatField/README.md`。
+- 已创建 `wenjian-client/Proto_CombatField/ArtReference/README.md`。
+- 已更新 `wenjian-client/README.md`。
+- 原型壳明确：
+  - 玩家目标规格 48x48。
+  - 地块目标规格 32x32。
+  - 第一场景为竹林战斗场。
+  - 第一 HUD 包含生命、内力、技能槽、小地图或区域指示。
+  - 第一网络目标是展示后端 `RegionSnapshot` 或等价进入区域响应。
+- 当前仍未创建完整 Unity 工程；这是原型壳和验收标准。
+
 ## 外部资料线索
 
 - Unity 官方 Unity 6 支持页面显示 Unity 6.3 LTS 为当前 LTS，适合锁定生产版本，支持到 2027 年 12 月。

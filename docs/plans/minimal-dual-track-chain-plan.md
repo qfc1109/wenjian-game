@@ -290,7 +290,7 @@ Current limitation: this is not yet playable. It proves the back-end login and e
 - Modify: `wenjian-client/README.md`
 - Modify: `task_plan.md`
 
-- [ ] **Step 1: Define Unity prototype acceptance**
+- [x] **Step 1: Define Unity prototype acceptance**
 
 The README must state:
 
@@ -300,7 +300,7 @@ The README must state:
 - first HUD: health, inner force, skill slots, minimal map indicator.
 - first network goal: display server region snapshot.
 
-- [ ] **Step 2: Link second-round art standards**
+- [x] **Step 2: Link second-round art standards**
 
 Reference:
 
@@ -309,7 +309,7 @@ wenjian-client/ArtConcepts/round2-visual-standards/
 docs/client/wenjian-executable-art-standards.md
 ```
 
-- [ ] **Step 3: Verify documentation**
+- [x] **Step 3: Verify documentation**
 
 Run:
 
@@ -318,6 +318,8 @@ rg -n "48x48|32x32|竹林|RegionSnapshot|round2-visual-standards" wenjian-client
 ```
 
 Expected: all prototype constraints are present.
+
+Verified on 2026-05-21: `rg -n "48x48|32x32|竹林|RegionSnapshot|round2-visual-standards" wenjian-client/Proto_CombatField wenjian-client/README.md` found all prototype constraints.
 
 ### Task 6: First Front-End/Back-End Acceptance
 
