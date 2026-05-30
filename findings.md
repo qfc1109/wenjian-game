@@ -15,6 +15,16 @@
 - `wenjian-protobuf`、`wenjian-config` 和 `wenjian-game-core` 目前仍主要是 Maven 模块壳。
 - PM 建议 Cursor 第一轮只做 protobuf Java 生成和网关 protobuf mapper，不直接切换 WebSocket 外部协议为二进制 protobuf，以保证现有集成测试继续作为安全网。
 
+## 2026-05-30 Cursor 第一轮 PM 审查发现
+
+- Cursor 汇报中的当前分支不准确：实际仍是 `codex/wenjian-architecture`，并非 detached `af8cfc4`。
+- Cursor 未能完成命令验证，但本机可用 `D:\JAVA\jdk-24` + `D:\maven\apache-maven-3.6.3` 执行 Maven；环境与计划中的 Java 21/Maven 3.9.x 有偏差，但可用 JDK 24 编译 `--release 21`。
+- 初始实现存在构建阻塞：`wenjian-protobuf` 缺少测试依赖，生成类型测试无法编译 JUnit。
+- 初始实现的 `protoSourceRoot` 写成 `${project.basedir}/../../../../protobuf`，会指向仓库外；已修正为 `${project.basedir}/../../protobuf`。
+- 初始实现依赖 `${env.PROTOC}`，不利于新机器稳定构建；已改为 Maven 通过 `protocArtifact` 下载 `com.google.protobuf:protoc:${protobuf.version}:exe:${os.detected.classifier}`。
+- 初始 mapper 错误引用 `GatewayDtos.*`，但当前 `GatewayDtos.java` 实际定义的是包级顶层类型；已改为直接引用 `ResultCode`、`GridPosition`、`LoginResult` 等实际类型。
+- 修正后 `mvn -q -pl wenjian-protobuf -am test`、`mvn -q -pl wenjian-gateway-ws -am test`、`mvn -q test` 均通过。
+
 ## 已知项目状态
 
 - 仓库已初始化 git。

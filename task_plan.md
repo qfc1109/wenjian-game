@@ -14,12 +14,19 @@
 - 【✔】 已执行 `codegraph init -i`，生成本地 CodeGraph 索引。
 - 【✔】 已分析路线文档和当前后端最小链路代码落点。
 - 【✔】 已生成 Cursor 第一轮阶段开发计划：`docs/plans/wenjian-cursor-stage-development-plan.md`。
+- 【✔】 PM 审查 Cursor 阶段一第一轮交付，发现 protobuf 生成路径、protoc 获取方式、测试依赖和 DTO 类型引用问题。
+- 【✔】 已修正阶段一第一轮交付，并补强 protobuf smoke test。
+- 【✔】 已生成下一阶段计划：`docs/plans/wenjian-cursor-stage1-config-plan.md`。
 
 ### 验证记录
 
 - 【✔】 CodeGraph 初始化结果：索引 13 个代码文件、113 个节点、170 条边。
 - 【✔】 已读取 `FirstChainGatewayService`、`FirstChainWebSocketHandler`、`GatewayDtos`、WebSocket 集成测试、proto 和 CSV 示例，确认阶段一优先级应为 protobuf 生成与网关映射。
 - 【❓】 远端实时版本未能确认，原因是当前环境无法连接 GitHub 443 端口；后续恢复网络后应重新执行 `git fetch origin --prune`。
+- 【✔】 PM 审查修正后执行 `mvn -q -pl wenjian-protobuf -am test` 通过。
+- 【✔】 PM 审查修正后执行 `mvn -q -pl wenjian-gateway-ws -am test` 通过。
+- 【✔】 PM 审查修正后执行 `mvn -q test` 通过。
+- 【✔】 `git diff --check` 通过；仅出现 Windows LF/CRLF 转换提示。
 
 ## 2026-05-21 工作记录
 

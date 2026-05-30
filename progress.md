@@ -6,6 +6,8 @@
 
 2026-05-30 已生成 Cursor 第一轮执行计划：`docs/plans/wenjian-cursor-stage-development-plan.md`。Cursor 本轮只执行 protobuf Java 生成和网关 protobuf 映射，完成后停下由 PM 检查。
 
+2026-05-30 PM 审查 Cursor 第一轮交付后发现构建阻塞并已修正：protobuf 源目录路径、protoc 下载方式、`wenjian-protobuf` 测试依赖、gateway mapper 对包级 DTO 的引用。修正后 `mvn -q -pl wenjian-protobuf -am test`、`mvn -q -pl wenjian-gateway-ws -am test`、`mvn -q test` 均通过。下一阶段计划已生成：`docs/plans/wenjian-cursor-stage1-config-plan.md`。
+
 2026-05-20 已完成首批美术方向复盘：用户确认下一轮采用“明快清爽的像素武侠，类似轻量动作肉鸽，战斗读得很清楚”。第二轮美术工作已从概念图探索调整为可执行标准建设，并生成角色规格、战斗场景、HUD、技能特效、敌人剪影、主城地块和秘境房间 7 张标准素材。
 
 ## 最新状态
