@@ -1,0 +1,2 @@
+region_id,map_id,region_type,pk_enabled,spawn_x,spawn_y
+1001,1001,TOWN,not_a_boolean,3200,2400
