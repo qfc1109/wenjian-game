@@ -2,7 +2,24 @@
 
 ## 当前目标
 
-围绕《问剑江湖》完成第一阶段项目规划、目录骨架设计、协议与配置最小骨架，并在第二轮美术标准确认后，采用“契约先行，前后端最小链路并行”的方案推进工程初始化。
+以 `docs/plans/wenjian-development-roadmap.md` 为后续主线，先让 Cursor 执行阶段一 A/B：建立 protobuf Java 生成流程，并让现有网关链路开始使用生成后的协议类型；Cursor 完成后由 PM 检查，再决定是否进入配置加载和 core 下沉。
+
+## 2026-05-30 工作记录
+
+### 任务列表
+
+- 【✔】 执行 `git status --short --branch`：当前分支 `codex/wenjian-architecture`，不在 `main/master`，无未提交改动，未发现无关改动。
+- 【❓】 尝试拉取远端最新代码失败：`git pull --ff-only`、`git fetch origin --prune`、`git ls-remote --heads origin` 均因 GitHub 443 连接失败未完成。
+- 【✔】 已确认本地 `HEAD` 为 `af8cfc4 中文：新增问剑江湖后续开发路线文档`，路线文档位于 `docs/plans/wenjian-development-roadmap.md`。
+- 【✔】 已执行 `codegraph init -i`，生成本地 CodeGraph 索引。
+- 【✔】 已分析路线文档和当前后端最小链路代码落点。
+- 【✔】 已生成 Cursor 第一轮阶段开发计划：`docs/plans/wenjian-cursor-stage-development-plan.md`。
+
+### 验证记录
+
+- 【✔】 CodeGraph 初始化结果：索引 13 个代码文件、113 个节点、170 条边。
+- 【✔】 已读取 `FirstChainGatewayService`、`FirstChainWebSocketHandler`、`GatewayDtos`、WebSocket 集成测试、proto 和 CSV 示例，确认阶段一优先级应为 protobuf 生成与网关映射。
+- 【❓】 远端实时版本未能确认，原因是当前环境无法连接 GitHub 443 端口；后续恢复网络后应重新执行 `git fetch origin --prune`。
 
 ## 2026-05-21 工作记录
 

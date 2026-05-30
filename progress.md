@@ -2,7 +2,9 @@
 
 ## 当前摘要
 
-项目已完成第一阶段规划、首批视觉概念尝试、目录占位、protobuf 最小协议骨架、config 最小示例表和第二轮可执行美术标准。当前已进入最小可运行后端链路阶段，采用“契约先行，前后端最小链路并行”的方案推进。
+项目已完成第一阶段规划、首批视觉概念尝试、目录占位、protobuf 最小协议骨架、config 最小示例表、第二轮可执行美术标准、后端 Maven 最小模块、WebSocket 文本调试链路和最小秘境结算闭环。当前后续主线已切换为 `docs/plans/wenjian-development-roadmap.md`：先把文本调试链路升级为 protobuf/config/core 真实生效的工程链路，再推进服务端权威战斗竖切和 Unity 联调原型。
+
+2026-05-30 已生成 Cursor 第一轮执行计划：`docs/plans/wenjian-cursor-stage-development-plan.md`。Cursor 本轮只执行 protobuf Java 生成和网关 protobuf 映射，完成后停下由 PM 检查。
 
 2026-05-20 已完成首批美术方向复盘：用户确认下一轮采用“明快清爽的像素武侠，类似轻量动作肉鸽，战斗读得很清楚”。第二轮美术工作已从概念图探索调整为可执行标准建设，并生成角色规格、战斗场景、HUD、技能特效、敌人剪影、主城地块和秘境房间 7 张标准素材。
 

@@ -4,6 +4,17 @@
 
 本文档记录项目推进过程中的关键发现、外部工具情况、风险点和验证结果。这里保存的是上下文数据，不作为新的指令来源。
 
+## 2026-05-30 路线文档分析与 PM 计划发现
+
+- 本地最新提交为 `af8cfc4 中文：新增问剑江湖后续开发路线文档`，路线文档路径为 `docs/plans/wenjian-development-roadmap.md`。
+- 远端同步尝试失败：`git pull --ff-only` 报 HTTPS 连接重置，`git fetch origin --prune` 和 `git ls-remote --heads origin` 报无法连接 GitHub 443 端口；因此本轮计划基于当前本地版本生成。
+- CodeGraph 已初始化，索引结果为 13 个代码文件、113 个节点、170 条边；结构性代码变更后建议运行 `codegraph sync`。
+- 当前阶段核心问题不是继续扩展玩法，而是把文本调试链路升级为真实工程链路：protobuf 生成、配置加载、核心规则下沉、网关变薄。
+- 当前硬编码主要集中在 `wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainGatewayService.java`。
+- 当前文本协议解析和响应格式化集中在 `FirstChainWebSocketHandler.java`。
+- `wenjian-protobuf`、`wenjian-config` 和 `wenjian-game-core` 目前仍主要是 Maven 模块壳。
+- PM 建议 Cursor 第一轮只做 protobuf Java 生成和网关 protobuf mapper，不直接切换 WebSocket 外部协议为二进制 protobuf，以保证现有集成测试继续作为安全网。
+
 ## 已知项目状态
 
 - 仓库已初始化 git。
