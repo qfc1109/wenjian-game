@@ -1,6 +1,7 @@
 target/
 *.class
 *.log
+wenjian-client/Proto_CombatField/unity-*-results.xml
 
 .idea/
 *.iml
@@ -8,3 +9,23 @@ target/
 .DS_Store
 
 .codegraph/
+
+# Unity generated files
+**/[Ll]ibrary/
+**/[Tt]emp/
+**/[Oo]bj/
+**/[Bb]uild/
+**/[Bb]uilds/
+!wenjian-client/Proto_CombatField/UnityProject/Packages/com.coplaydev.unity-mcp/Editor/Tools/Build/
+!wenjian-client/Proto_CombatField/UnityProject/Packages/com.coplaydev.unity-mcp/Editor/Tools/Build/**
+**/[Ll]ogs/
+**/[Uu]ser[Ss]ettings/
+**/MemoryCaptures/
+**/[Rr]ecordings/
+**/[Aa]ssets/AssetStoreTools*
+*.csproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
