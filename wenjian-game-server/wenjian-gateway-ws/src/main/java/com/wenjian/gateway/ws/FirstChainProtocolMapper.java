@@ -144,12 +144,11 @@ public final class FirstChainProtocolMapper {
         .setMapId(result.mapId());
 
     if (result.spawnPosition() != null) {
-      builder.setSelf(EntityState.newBuilder()
-          .setEntityId(result.playerId())
-          .setEntityType(EntityType.ENTITY_TYPE_PLAYER)
-          .setPosition(toVec2i(result.spawnPosition()))
-          .setHp(100)
-          .setMaxHp(100));
+      result.entities().stream()
+          .filter(entity -> entity.entityId() == result.playerId())
+          .findFirst()
+          .map(FirstChainProtocolMapper::toEntityStateWithDefaultMaxHp)
+          .ifPresent(builder::setSelf);
     }
 
     for (EntitySnapshot entity : result.entities()) {

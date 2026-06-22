@@ -4,7 +4,7 @@
 
 当前主线是先做 Unity 客户端真实原型，用客户端场景、输入、HUD、特效和联调反馈来反推后端接口、字段、配置和数据库。
 
-下一步启动本地后端并做 Unity 运行态联调，验证 WebSocket 登录和区域快照能在 HUD 上真实显示；后端数据库和复杂协议暂不继续猜。
+阶段 6 秘境开始、房间展示和结算反馈已通过 Unity MCP 运行态联调；阶段 8 已补客户端观感、HUD 安全区、角色轮廓、场景层次和战斗反馈可读性；阶段 9 已把主角效果图接入为 Unity Sprite，补了 4 向移动/攻击/受击帧、玩家边界、技能命中范围、敌人待机/受击状态和秘境房间场景反馈；阶段 10 已补训练敌人追击/避障、技能冷却、运行态视觉验收和后端字段反馈；阶段 11 已补敌人攻击玩家、玩家受击扣血、击杀敌人、清怪开门和胜利反馈；阶段 12 已补出口交互、奖励三选一、下一房间重置和多敌人小波次。下一步继续客户端优先，做可试玩打磨：让奖励真实影响战斗参数，补房间差异、失败/重开和更多表现反馈。
 
 ## 需求索引
 
@@ -12,7 +12,7 @@
 
 | 需求ID | 需求 | 当前状态 | 当前阶段 | 下一步 |
 |--------|------|----------|----------|--------|
-| R-20260606-unity-client | 先做 Unity 客户端真实原型 | 进行中 | 阶段 4：WebSocket 登录和区域快照 | 启动本地后端，运行 Unity 场景，确认 HUD 显示真实 `LOGIN_OK` / `REGION_SNAPSHOT` |
+| R-20260606-unity-client | 先做 Unity 客户端真实原型 | 进行中 | 阶段 13：待开始单人秘境肉鸽试玩打磨 | 补奖励实际效果、房间差异、失败/重开、更多表现反馈和试玩验收 |
 
 ## 需求详情
 
@@ -20,7 +20,7 @@
 
 - 目标：先把 Unity 客户端跑起来，再决定后端还需要哪些接口、字段、配置和数据库设计。
 - 计划文档：`docs/plans/wenjian-unity-proto-combatfield-client-plan.md`
-- 当前：Unity 工程和第一张 `Proto_CombatField` 场景已生成，玩家可本地移动，相机可跟随，基础 HUD、调试面板和 WebSocket 客户端脚本已挂入场景；真实后端联调、特效和技能反馈还没做。
+- 当前：Unity 工程和第一张 `Proto_CombatField` 场景已生成，玩家可本地移动，相机可跟随，基础 HUD、WebSocket 登录/区域快照、技能意图、剑气占位、受击反馈、秘境开始和结算反馈已完成运行态联调；已补一轮客户端观感和战斗反馈可读性，并把青白轻剑主角效果图提取成 Unity 可见 Sprite，接入 4 向移动、攻击和受击帧切换；已补玩家移动边界、技能命中范围、敌人 Idle/Hit 状态、秘境房间场景反馈、训练敌人基础追击/避障、技能冷却 HUD、小战斗闭环、出口交互、奖励三选一、下一房间串联和多敌人小波次；下一步做单人秘境肉鸽试玩打磨，让奖励真实影响战斗参数，并补房间差异、失败/重开和更多表现反馈。
 
 #### 阶段
 
@@ -28,10 +28,82 @@
 - 【✔】 阶段 1：检查 Unity 环境并创建真实 Unity 工程；结果：使用本机 Unity `2022.3.62f3c1` 创建 `wenjian-client/Proto_CombatField/UnityProject`，接入 `com.coplaydev.unity-mcp` 嵌入式包，Codex config 已写入 `unityMCP` server；影响范围：Unity 工程、Packages、Codex 本地配置；验证：Unity batchmode 能加载工程，`uvx --from mcpforunityserver==9.7.1 mcp-for-unity --help` 已成功；未完成：当前 Codex 会话未暴露 Unity MCP 工具，HTTP server 8080 未常驻启动 <2026-06-06>
 - 【✔】 阶段 2：创建竹林战斗场、玩家、训练敌人和原型相机；结果：生成 `Assets/_Wenjian/Scenes/Proto_CombatField.unity`、Tilemap、占位地块、玩家、训练敌人和正交主相机；影响范围：Unity 场景、占位美术、场景生成器；验证：`unity-generate-proto-scene-after-movement.log` 生成成功，最终 EditMode 测试 `14/14` 通过；未完成：Pixel Perfect/URP 包尚未接入，后续画面 QA 时处理 <2026-06-06>
 - 【✔】 阶段 3：实现本地 8 方向输入、HUD 和调试面板；结果：`LocalPlayerMotor` 支持原型本地 8 方向移动，`CameraFollow2D` 跟随玩家，`PrototypeHudPresenter` 显示连接状态、玩家血量、敌人血量、区域/秘境状态、serverTick、坐标和最近事件；影响范围：Unity 运行时 UI、场景工厂和 EditMode 测试；验证：最终 EditMode 测试 `17/17` 通过；未完成：Input System 包尚未接入，当前仍用 Legacy Input 原型输入 <2026-06-06>
-- 【→】 阶段 4：接入 WebSocket 登录和进入区域；已完成：`FirstChainWsClient` 已实现连接 `ws://127.0.0.1:18080/ws/first-chain`、发送 `LOGIN` 和接收文本消息的客户端逻辑，`FirstChainHudController` 可把 `LOGIN_OK` / `REGION_SNAPSHOT` 更新到 HUD，并在 `LOGIN_OK` 后排队 `ENTER_REGION`；当前停在：还没启动本地后端做 Unity 运行态联调和截图；下一步：启动 gateway-ws，运行 Unity 场景，确认 HUD 显示真实返回并记录字段缺口 <2026-06-06>
-- 【 】 阶段 5：接入技能事件、剑气特效和受击反馈
-- 【 】 阶段 6：接入秘境开始和结算反馈
-- 【 】 阶段 7：整理后端接口、配置和数据库反馈
+- 【✔】 阶段 4：接入 WebSocket 登录和进入区域；结果：本地 gateway-ws 启动后，Unity MCP Play Mode 验证 HUD 显示 `Conn: Online`、`Tick 1`、`Ent 2` 和 `REGION_SNAPSHOT entities=2`；影响范围：Unity WebSocket 客户端、HUD 状态、后端字段反馈；验证：Unity MCP 运行态联调通过，EditMode 测试 `23/23` 通过；缺口：`REGION_SNAPSHOT` 仍缺实体详情列表 <2026-06-08>
+- 【✔】 阶段 5：接入技能事件、剑气特效和受击反馈；结果：新增技能命令、技能输入控制器、剑气 Quad 占位、伤害飘字和敌方血条扣减，Unity MCP 运行态触发技能后收到 `SKILL_EVENT` / `DAMAGE_EVENT`；影响范围：客户端 Net、Presentation、场景工厂、场景文件和 EditMode 测试；验证：Unity EditMode 测试 `32/32` 通过，MCP Play Mode 验证 `Feedback => skill=2001 damage=-12`；缺口：服务端事件还缺 `eventId/serverTick/durationMs/vfxId/targetHp` 等字段 <2026-06-08>
+- 【✔】 阶段 6：接入秘境开始和结算反馈；结果：新增 `START_ROGUE` / `FINISH_ROGUE` 命令、秘境调试控制器、房间摘要 HUD 和奖励摘要 HUD；影响范围：客户端 Net、Presentation、UI、场景工厂、场景文件和 EditMode 测试；验证：Unity EditMode 测试 `41/41` 通过，MCP Play Mode 验证 HUD 显示 `ROGUE_START instance=9000001 monsters=8` 与 `Reward item 6001 x3`，Console 无 error/warning；缺口：后端仍缺房间状态、怪物实体列表、出口状态和奖励详情 <2026-06-08>
+- 【✔】 阶段 7：整理后端接口、配置和数据库反馈；结果：`docs/client/proto-combatfield-backend-feedback.md` 已覆盖阶段 4-6 主要缺口，后端下一轮优先级暂缓到客户端可见质量继续提升后再定；影响范围：客户端反馈文档和后续后端计划输入；验证：未运行，原因：文档/计划状态调整 <2026-06-10>
+- 【✔】 阶段 8：补客户端观感、HUD 安全区、角色轮廓和战斗反馈可读性；结果：HUD 增加背板并缩小字号，地面降低格子压迫感并增加柔化层/草簇/石块/训练区域，玩家和训练敌人拆成 `VisualRoot` 多层轮廓，技能和受击反馈继续可见；影响范围：Unity 场景工厂、`Proto_CombatField` 场景、EditMode 测试；验证：Unity EditMode `46/46` 通过，MCP Play Mode 验证在线、技能、伤害、VFX 和世界血条，Console 无 error/warning <2026-06-10>
+- 【✔】 阶段 9：继续客户端可玩性和场景内容扩展；结果：已将 `08-character-spec-standard.png` 的青白轻剑主角提取为 Unity Sprite，生成 20 张主角帧资源并接入 4 向移动/攻击/受击；本轮继续补玩家移动边界、技能命中范围预览、训练敌人 Idle/Hit 状态、受击位移/闪色和秘境房间色层/怪物标记/出口封印反馈；影响范围：Unity Presentation、Net、Prototype 场景工厂、EditMode 测试和 `Proto_CombatField` 场景；验证：Unity EditMode `61/61` 通过，Console 无 error/warning，临时相机截图确认房间/技能/受击反馈可见 <2026-06-10>
+- 【✔】 阶段 10：补可玩战斗循环扩展，覆盖敌人基础 AI/追击、障碍碰撞、技能冷却/命中结果表现，并继续整理后端实体列表、技能事件和房间出口字段需求；结果：新增训练敌人追击/避障/边界约束组件，技能输入增加冷却拦截和 HUD 冷却文本，默认场景已接线并重建，运行态探针确认追击、冷却、命中范围、命中爆点和伤害飘字可用，后端字段反馈已补到 `docs/client/proto-combatfield-backend-feedback.md`；影响范围：Unity Presentation、Prototype 场景工厂、`Proto_CombatField` 场景、客户端后端反馈文档；验证：Unity Play Mode 运行态探针通过，临时截图确认画面可见，Unity Console 无 error/warning，阶段相关 EditMode `28/28` 通过，全量 EditMode `69/69` 通过 <2026-06-10>
+- 【✔】 阶段 11：补小战斗闭环，覆盖敌人攻击玩家、玩家受击血量、清怪开门、胜利反馈和下一轮后端字段复核；结果：新增训练敌人攻击范围/冷却/伤害事件和 `PrototypeCombatLoopController`，HUD 可在敌人攻击时扣玩家血并播放受击帧，玩家击杀敌人后敌方 HP 归零、怪物数清零、房间切为 `Cleared`、出口封印隐藏、敌人视觉保持 `Dead`，阶段 11 后端字段反馈已补入客户端反馈文档；影响范围：Unity Presentation、Net、Prototype 场景工厂、`Proto_CombatField` 场景、EditMode 测试和客户端后端反馈文档；验证：阶段相关 EditMode `47/47` 通过，全量 EditMode `75/75` 通过，Unity MCP 运行态探针确认 `ENEMY_ATTACK hpDelta=-6`、玩家 HP `100->94`、击杀后 `ROOM_CLEARED`、出口隐藏和敌人 `Dead`；Unity Console 无项目 error，只有截图工具产生的 1 条 MCP fallback warning <2026-06-10>
+- 【✔】 阶段 12：补胜利后交互和奖励展示，覆盖出口交互、奖励预告/拾取、下一房间串联和多敌人/波次雏形；结果：清怪后出现可交互出口，玩家靠近出口弹出 3 选 1 本地奖励面板，选择奖励后 HUD 刷新奖励摘要并进入下一房间，下一房间重置敌人、怪物数、房间状态和出口封印，默认场景扩展到 2-3 只训练敌人的小波次，并补离线原型技能命中，未启动后端也能推进小房间循环；影响范围：Unity Presentation、Net、UI、Prototype 场景工厂、`Proto_CombatField` 场景、EditMode 测试和客户端后端反馈文档；验证：阶段相关 EditMode `52/52` 通过，全量 EditMode `84/84` 通过，Unity MCP 离线场景探针确认 4 次本地技能命中清完 2 只怪、`afterFirst=1`、清怪开出口、奖励面板弹出、选择奖励后进入 `Room 2`、`monsters=3`、三只敌人激活且出口重新封印 <2026-06-10>
+- 【 】 阶段 13：补单人秘境肉鸽试玩打磨，覆盖奖励实际效果、房间差异、失败/重开、怪物目标切换和更多战斗表现反馈
+
+## 2026-06-10
+
+### 执行记录
+
+- 【✔】 R-20260606-unity-client / 阶段 8：补客户端观感与战斗反馈可读性；结果：新增 HUD 背板和安全区、地面柔化/草簇/石块/训练区域、多层玩家/敌人轮廓、敌人世界血条同步和技能/命中反馈；验证：Unity EditMode `46/46` 通过，MCP Play Mode 触发技能后 `DAMAGE_EVENT hpDelta=-12`、`wake=True`、`burst=True`、`enemyHp=0.88`，Console 无 error/warning <2026-06-10>
+- 【✔】 R-20260606-unity-client / 阶段 9：补主角 4 向移动、攻击和受击帧；结果：已生成并接入 20 张青白轻剑主角帧资源，`LocalPlayerMotor` 可按移动方向切 idle/walk，`SkillIntentController` 触发攻击帧，`FirstChainHudController` 在玩家受击时触发 hit 帧；影响范围：Unity 角色资源、Presentation、Net、场景工厂和 `Proto_CombatField` 场景；验证：Unity EditMode `53/53` 通过，场景检查确认 `PlayerSpriteAnimator` 已被 motor/HUD 引用，Console 无 error/warning <2026-06-10>
+- 【✔】 R-20260606-unity-client / 阶段 9：补玩家边界、技能范围、敌人状态和秘境房间反馈；结果：`LocalPlayerMotor` 增加战斗区域边界，技能事件显示命中范围预览，训练敌人有 Idle 脉动和 Hit 位移/闪色/状态文本，`RogueRoomScenePresenter` 让秘境开始/结算驱动房间色层、怪物标记和出口封印；影响范围：Unity Presentation、Net、Prototype 场景工厂、EditMode 测试和 `Proto_CombatField` 场景；验证：Unity EditMode `61/61` 通过，Console 无 error/warning，临时相机截图确认房间/技能/受击反馈可见 <2026-06-10>
+- 【✔】 R-20260606-unity-client / 阶段 10：补可玩战斗循环基础实现；结果：`TrainingEnemyMotor` 支持训练敌人按仇恨范围追击玩家、遇到矩形障碍侧移避开并限制在战斗边界内，`SkillIntentController` 增加技能冷却和 `SkillCooldownText` HUD，场景反馈改为抖动敌人 `VisualRoot` 避免覆盖 AI 位移，`Proto_CombatField` 场景已重建；影响范围：Unity Presentation、Prototype 场景工厂、`Proto_CombatField` 场景；验证：阶段相关 EditMode `28/28` 通过，全量 EditMode `69/69` 通过，Unity Console 无 error/warning <2026-06-10>
+- 【✔】 R-20260606-unity-client / 阶段 10：完成运行态视觉验收和后端字段反馈整理；结果：Unity Play Mode 探针确认敌人从 `x=4.0` 追击到 `x≈1.3`，技能第一次释放成功、第二次被冷却拦截、冷却结束后可再次释放，剑气、命中范围、命中爆点和伤害飘字均激活；`docs/client/proto-combatfield-backend-feedback.md` 已补实体权威状态、地图阻挡/出口、技能冷却和命中结果字段缺口；验证：临时截图 `C:\Users\Administrator\AppData\Local\Temp\wenjian-client-qa\stage10-runtime-qa.png` 可见，Unity Console 无 error/warning <2026-06-10>
+- 【✔】 R-20260606-unity-client / 阶段 11：补小战斗闭环；结果：敌人进入攻击范围后触发本地攻击事件，`PrototypeCombatLoopController` 转给 HUD 扣玩家血；玩家伤害击杀敌人后触发清怪开门，房间状态变为 `Cleared`，敌人视觉保持 `Dead`，`docs/client/proto-combatfield-backend-feedback.md` 已补敌人攻击、清怪开门和胜利状态字段缺口；影响范围：Unity Presentation、Net、Prototype 场景工厂、`Proto_CombatField` 场景和客户端反馈文档；验证：阶段相关 EditMode `47/47` 通过，全量 EditMode `75/75` 通过，Unity MCP 运行态探针确认玩家 HP `100->94`、`ROOM_CLEARED`、出口隐藏和敌人 `Dead` <2026-06-10>
+- 【✔】 R-20260606-unity-client / 阶段 12：补出口交互、奖励三选一、下一房间和小波次；结果：新增 `PrototypeRogueRewardController`，清怪后出口可交互，靠近出口弹出 3 选 1 本地奖励面板，选择奖励后 HUD 显示奖励摘要并进入下一房间，房间状态、敌人、怪物数和出口封印重置，默认场景扩展为 2-3 只训练敌人的小波次，并补离线原型技能命中，未启动后端也能推进小房间循环；影响范围：Unity Presentation、Net、UI、Prototype 场景工厂、`Proto_CombatField` 场景、EditMode 测试和客户端反馈文档；验证：阶段相关 EditMode `52/52` 通过，全量 EditMode `84/84` 通过，Unity MCP 离线场景探针确认 4 次本地技能命中清完 2 只怪、第一只死亡后剩余 `1`、第二只死亡后开出口、奖励面板弹出、选择奖励后进入 `Room 2` 且三只敌人激活 <2026-06-10>
+
+### 问题记录
+
+- 【✔】 R-20260606-unity-client / 阶段 8：用户反馈“确实能动，但是连半成品都算不上，太过简陋”；处理结果：本轮优先补 HUD 布局、角色轮廓、场景层次和战斗反馈，而不是继续推进后端协议 <2026-06-10>
+- 【✔】 R-20260606-unity-client / 阶段 8：MCP 内置 `manage_camera` batchmode 截图请求未稳定落盘；处理结果：改用 Unity Camera 渲染临时 PNG 到系统临时目录做视觉 QA，未把截图产物保留在仓库 <2026-06-10>
+
+### 变更记录
+
+| 需求ID | 阶段 | 文件/配置 | 修改内容 | 回滚方法 |
+|--------|------|-----------|----------|----------|
+| R-20260606-unity-client | 阶段 8 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Prototype/CombatFieldSceneFactory.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scenes/Proto_CombatField.unity` | 增加 HUD 背板/安全区、地面柔化层、草簇/石块/训练区域、多层玩家/敌人轮廓，并重新生成场景 | 回退场景工厂改动后重新运行 `ProtoCombatFieldSceneGenerator.BuildDefaultScene()` |
+| R-20260606-unity-client | 阶段 8 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Prototype/CombatFieldSceneFactoryTests.cs` | 增加 HUD 安全区、地面弱化、环境装饰和角色轮廓的 EditMode 断言 | 回退新增断言 |
+| R-20260606-unity-client | 阶段 9 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Art/Characters/PlayerLightSword_Idle_Front.png`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Editor/Prototype/ProtoCombatFieldSceneGenerator.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Prototype/CombatFieldSceneFactory.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scenes/Proto_CombatField.unity` | 从角色规格效果图提取青白轻剑主角正面待机 Sprite，并让玩家 `VisualRoot/CharacterSprite` 使用该 Sprite | 删除角色 PNG/.meta，回退场景生成器和场景工厂后重新生成场景 |
+| R-20260606-unity-client | 阶段 9 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Art/Characters/PlayerLightSword_*.png`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/PlayerSpriteAnimator.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/LocalPlayerMotor.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/SkillIntentController.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Net/FirstChainHudController.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Prototype/CombatFieldSceneFactory.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scenes/Proto_CombatField.unity` | 生成并接入 4 向 idle/walk、4 向攻击、4 向受击主角帧，新增玩家 Sprite 动画控制器，并让移动、技能和玩家受击驱动换帧 | 删除新增 `PlayerLightSword_*.png/.meta`、`PlayerSpriteAnimator.cs/.meta` 和对应测试，回退移动/技能/HUD/场景工厂改动后重新生成场景 |
+| R-20260606-unity-client | 阶段 9 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/LocalPlayerMotor.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/PrototypeCombatFeedbackPresenter.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/RogueRoomScenePresenter.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Net/FirstChainHudController.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Prototype/CombatFieldSceneFactory.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scenes/Proto_CombatField.unity` | 增加玩家世界边界、技能命中范围预览、敌人 Idle/Hit 状态反馈、秘境房间色层/怪物标记/出口封印，并接入场景默认生成 | 删除新增 `RogueRoomScenePresenter.cs/.meta` 和对应测试，回退移动/反馈/HUD/场景工厂改动后重新生成场景 |
+| R-20260606-unity-client | 阶段 9 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Net/FirstChainHudControllerTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Prototype/CombatFieldSceneFactoryTests.cs` | 新增玩家边界、技能范围、敌人状态、秘境房间反馈和网络事件接线的 EditMode 测试 | 回退新增/修改的对应测试文件 |
+| R-20260606-unity-client | 阶段 10 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/TrainingEnemyMotor.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/SkillIntentController.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Prototype/CombatFieldSceneFactory.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scenes/Proto_CombatField.unity` | 新增训练敌人本地追击/避障/边界约束，技能输入增加冷却拦截和 HUD 冷却文本，并让战斗反馈只抖动敌人 `VisualRoot`，避免覆盖敌人根节点 AI 位移 | 删除 `TrainingEnemyMotor.cs/.meta` 和对应测试，回退技能冷却与场景工厂接线后重新生成场景 |
+| R-20260606-unity-client | 阶段 10 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/TrainingEnemyMotorTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/SkillIntentControllerTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Prototype/CombatFieldSceneFactoryTests.cs` | 新增训练敌人追击/避障/边界、技能冷却和默认场景接线的 EditMode 测试 | 回退新增/修改的对应测试文件 |
+| R-20260606-unity-client | 阶段 10 | `docs/client/proto-combatfield-backend-feedback.md`、`task_plan.md` | 补阶段 10 运行态验收结果，以及实体权威状态、地图阻挡/出口、技能冷却和命中结果字段缺口；阶段计划推进到阶段 11 | 回退文档中阶段 10 相关段落，并把 `task_plan.md` 当前阶段恢复为阶段 10 进行中 |
+| R-20260606-unity-client | 阶段 11 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/TrainingEnemyMotor.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/PrototypeCombatLoopController.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Net/FirstChainHudController.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/PrototypeCombatFeedbackPresenter.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/RogueRoomScenePresenter.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Prototype/CombatFieldSceneFactory.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scenes/Proto_CombatField.unity` | 新增敌人攻击事件/冷却/范围提示、原型战斗 loop 事件桥接、玩家扣血、击杀清怪、开门和死亡终态表现，并重新生成默认场景 | 删除 `PrototypeCombatLoopController.cs/.meta`，回退阶段 11 相关脚本和场景工厂改动后重新生成场景 |
+| R-20260606-unity-client | 阶段 11 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/TrainingEnemyMotorTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/PrototypeCombatLoopControllerTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Net/FirstChainHudControllerTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/RogueRoomScenePresenterTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/PrototypeCombatFeedbackPresenterTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Prototype/CombatFieldSceneFactoryTests.cs` | 新增敌人攻击、玩家扣血、击杀清怪、房间开门、敌人死亡和默认场景接线的 EditMode 测试 | 回退新增/修改的对应测试文件 |
+| R-20260606-unity-client | 阶段 11 | `docs/client/proto-combatfield-backend-feedback.md`、`task_plan.md` | 补阶段 11 小战斗闭环验收结果，以及敌人攻击、清怪开门和胜利状态字段缺口；阶段计划推进到阶段 12 | 回退文档中阶段 11 相关段落，并把 `task_plan.md` 当前阶段恢复为阶段 11 进行中 |
+| R-20260606-unity-client | 阶段 12 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/PrototypeRogueRewardController.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/RogueRoomScenePresenter.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/PrototypeCombatLoopController.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/PrototypeCombatFeedbackPresenter.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/SkillIntentController.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Net/FirstChainHudController.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/UI/PrototypeHudPresenter.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Prototype/CombatFieldSceneFactory.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scenes/Proto_CombatField.unity` | 新增出口交互、3 选 1 奖励面板、下一房间重置、多敌人小波次、离线原型技能命中、HUD 奖励摘要和默认场景接线 | 删除 `PrototypeRogueRewardController.cs/.meta`，回退阶段 12 相关脚本和场景工厂改动后重新生成场景 |
+| R-20260606-unity-client | 阶段 12 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/PrototypeRogueRewardControllerTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/RogueRoomScenePresenterTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/PrototypeCombatFeedbackPresenterTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/SkillIntentControllerTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Net/FirstChainHudControllerTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/UI/PrototypeHudPresenterTests.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Prototype/CombatFieldSceneFactoryTests.cs` | 新增出口交互、奖励选择、下一房间、波次推进、离线技能命中、HUD 展示和默认场景接线的 EditMode 测试 | 回退新增/修改的对应测试文件 |
+| R-20260606-unity-client | 阶段 12 | `docs/client/proto-combatfield-backend-feedback.md`、`task_plan.md` | 补阶段 12 验收结果，以及出口交互、奖励候选、下一房间和局内奖励 modifier 字段缺口；阶段计划推进到阶段 13 | 回退文档中阶段 12 相关段落，并把 `task_plan.md` 当前阶段恢复为阶段 12 进行中 |
+
+## 2026-06-08
+
+### 执行记录
+
+- 【✔】 R-20260606-unity-client / 阶段 4：完成 Unity MCP 运行态 WebSocket 联调；结果：本地 gateway-ws 监听 `18080` 后，Unity Play Mode HUD 显示 `Conn: Online`、`Tick 1`、`Ent 2`、`REGION_SNAPSHOT entities=2` <2026-06-08>
+- 【✔】 R-20260606-unity-client / 阶段 5：按 TDD 补技能意图、剑气占位和受击反馈；结果：新增 `BuildSkill`、`SkillIntentController`、`PrototypeCombatFeedbackPresenter`，并让 `FirstChainWsClient` 在技能排队后立即发送命令；验证：Unity EditMode `32/32` 通过，MCP Play Mode 触发技能后收到 `DAMAGE_EVENT hpDelta=-12` <2026-06-08>
+- 【✔】 R-20260606-unity-client / 阶段 6：按 TDD 接入秘境开始、房间展示和结算反馈；结果：新增 `BuildStartRogue` / `BuildFinishRogue`、`RogueDebugController`、秘境房间摘要和奖励摘要 HUD；验证：Unity EditMode `41/41` 通过，MCP Play Mode 验证 `START_ROGUE` 后显示 `Rogue 4001  Inst 9000001  Map 2001  Monsters 8  Pool 5001`，`FINISH_ROGUE` 后显示 `Reward item 6001 x3`，Console 无 error/warning <2026-06-08>
+- 【→】 R-20260606-unity-client / 阶段 7：开始整理后端接口、配置和数据库反馈；当前处理：已把阶段 6 的秘境字段缺口补入 `docs/client/proto-combatfield-backend-feedback.md`；下一步：形成下一轮后端最小字段和配置开发计划 <2026-06-08>
+
+### 问题记录
+
+- 【✔】 R-20260606-unity-client / 阶段 4：gateway-ws 默认相对配置路径启动失败，提示缺少 `player_template.csv`；处理结果：联调时使用 `WENJIAN_CONFIG_SOURCE_DIR=E:\qfc\workspace\wenjian-game\config\source` 显式指定配置目录，并记录到客户端反馈文档 <2026-06-08>
+- 【❓】 R-20260606-unity-client / 阶段 5：Unity MCP batchmode 不支持 `scene_view` 截图，`game_view` 截图请求未稳定落盘；当前处理：本轮用 MCP 读取 HUD/反馈组件状态和 Console 作为运行态证据；需要：后续如需视觉验收，改用可见 Unity Editor 或非 batchmode 截图 <2026-06-08>
+- 【❓】 R-20260606-unity-client / 阶段 6：`ROGUE_START` 当前只给 `monsterId/monsters/rewardPoolId/entities` 摘要；当前处理：客户端只能显示房间摘要，不能真实生成怪物列表和出口；需要：后端补房间状态、清怪条件、怪物实体列表和出口状态 <2026-06-08>
+- 【❓】 R-20260606-unity-client / 阶段 6：`ROGUE_FINISH` 当前只给 `itemId/count`，且调试链路允许未清怪直接结算；当前处理：客户端只显示奖励数字摘要；需要：后端补奖励详情来源、多奖励结构和服务端清怪/幂等校验 <2026-06-08>
+
+### 变更记录
+
+| 需求ID | 阶段 | 文件/配置 | 修改内容 | 回滚方法 |
+|--------|------|-----------|----------|----------|
+| R-20260606-unity-client | 阶段 5 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Net/` | 新增 `BuildSkill`，让技能命令可排队并通知 WebSocket 立即发送 | 回退 `FirstChainCommandBuilder.cs`、`FirstChainHudController.cs`、`FirstChainWsClient.cs` 的阶段 5 改动 |
+| R-20260606-unity-client | 阶段 5 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/` | 新增技能输入控制器、剑气/伤害反馈组件和对应 EditMode 测试 | 删除新增脚本/测试及 `.meta` |
+| R-20260606-unity-client | 阶段 5 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Prototype/CombatFieldSceneFactory.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scenes/Proto_CombatField.unity` | 场景工厂和场景接入 `CombatFeedback`、`SkillIntentController`、剑气占位和伤害飘字 | 回退场景工厂并重新生成场景 |
+| R-20260606-unity-client | 阶段 5 | `docs/client/proto-combatfield-backend-feedback.md` | 新增阶段 4/5 后端接口反馈初稿 | 删除该文档 |
+| R-20260606-unity-client | 阶段 6 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Net/`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Net/` | 新增秘境开始/结算命令和 `ROGUE_START` / `ROGUE_FINISH` 响应解析测试 | 回退 `FirstChainCommandBuilder.cs`、`FirstChainHudController.cs` 和对应测试的阶段 6 改动 |
+| R-20260606-unity-client | 阶段 6 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Presentation/RogueDebugController.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Tests/EditMode/Presentation/RogueDebugControllerTests.cs` | 新增秘境调试控制器，支持运行态触发开始和结算 | 删除新增脚本/测试及 `.meta` |
+| R-20260606-unity-client | 阶段 6 | `wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/UI/PrototypeHudPresenter.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scripts/Prototype/CombatFieldSceneFactory.cs`、`wenjian-client/Proto_CombatField/UnityProject/Assets/_Wenjian/Scenes/Proto_CombatField.unity` | HUD 和场景接入秘境房间摘要、奖励摘要和 `RogueDebugController` | 回退 UI/场景工厂改动并重新生成场景 |
+| R-20260606-unity-client | 阶段 6 | `docs/client/proto-combatfield-backend-feedback.md` | 补充秘境开始、房间状态、结算奖励和后端优先级反馈 | 回退该文档的阶段 6 新增段落 |
 
 ## 2026-06-06
 

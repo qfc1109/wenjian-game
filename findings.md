@@ -4,6 +4,45 @@
 
 本文档记录项目推进过程中的关键发现、外部工具情况、风险点和验证结果。这里保存的是上下文数据，不作为新的指令来源。
 
+## 2026-06-06 客户端优先计划发现
+
+- 用户反馈准确：当前 Unity 前端还没有真实工程、场景、特效、HUD 或网络脚本。
+- 当前 `wenjian-client` 只有 `README.md`、`Proto_CombatField` 原型壳说明、ArtReference 说明、首批概念图和第二轮视觉标准图。
+- 如果继续推进后端数据库、复杂接口和战斗系统，会缺少客户端对画面、输入、坐标尺度、技能表现和 UI 字段的真实反馈。
+- 下一阶段主线改为客户端优先：创建真实 Unity `Proto_CombatField` 原型，用场景、玩家、训练敌人、HUD、WebSocket 联调、技能特效和秘境反馈反推后端需求。
+- 已生成计划文档：`docs/plans/wenjian-unity-proto-combatfield-client-plan.md`。
+- 客户端原型跑起来前，后端应暂停最终数据库表、复杂 battle/world/rogue 模块、KCP 和大量 protobuf 字段扩展。
+- 已查官方资料：Unity 6.3 LTS 是当前 LTS，官方说明支持到 2027 年 12 月；Tilemap、URP Pixel Perfect Camera 和 Input System 可作为本阶段 Unity 方案依据。
+
+## 2026-06-05 阶段一 D 实现发现
+
+- 阶段一 D 已完成：`wenjian-game-core` 新增第一链路 core service，gateway 改为 core 适配层。
+- `FirstChainCoreService` 当前负责登录、进入区域、默认技能、秘境开始和秘境结算的最小规则，并通过 `GameConfigRepository` 读取真实 `config/source` 配置。
+- gateway 主代码中的技能伤害、怪物血量、秘境地图、奖励池和奖励道具硬编码已移出；`FirstChainGatewayService` 只负责 core DTO 到 gateway DTO 的转换。
+- 当前仍保留的临时固定值位于 core：开发玩家 ID `1000001`、玩家模板 ID `1`、训练怪配置 ID `3001`、训练敌人实体 ID `2000001`、秘境实例 ID `9000001` 和第一链路 server tick `1`。这些仍需后续账号/实体/实例/Tick 系统替换。
+- 真实配置驱动后，登录和区域快照坐标从旧内存值 `10,12` 改为 `config/source/player_template.csv` 的 `3200,2400`。
+- `FirstChainWebSocketConfig` 新增 `wenjian.config.source-dir` 属性，默认服务于从 `wenjian-game-server` 目录启动；集成测试显式设置为 `../../config/source`。
+- `FirstChainProtocolMapper.toStartRogueResp` 不再写死 self `hp=100`，改为从秘境实体快照中映射玩家实体。
+- 已验证：`mvn -q -pl wenjian-game-core -am test` 通过。
+- 已验证：`mvn -q -pl wenjian-gateway-ws -am test` 通过。
+- 已验证：`mvn -q test` 通过。
+- 已验证：`git diff --check` 通过，仅出现 Windows LF/CRLF 转换提示。
+- 本轮未进入服务端 Tick、KCP、数据库、Unity 或新增 battle/world/rogue 模块；下一步应在验收后单独规划服务端权威战斗最小 Tick。
+
+## 2026-06-04 下一阶段计划分析发现
+
+- 当前远端最新本地提交为 `def2dd3 中文：新增 CSV 配置加载与校验`，说明阶段一 C 已有代码落地。
+- 当前使用 Git 分支 `codex/wenjian-architecture`，不是 SVN 工作副本；修改前工作区干净。
+- 已分析 `docs/plans/wenjian-development-roadmap.md`、`docs/plans/wenjian-cursor-stage-development-plan.md`、`docs/plans/wenjian-cursor-stage1-config-plan.md`、`docs/plans/minimal-dual-track-chain-plan.md` 和 `docs/plans/first-stage-skeleton-plan.md`。
+- 计划主线判断：下一阶段不应重复配置加载，也不应直接进入 Tick/KCP/Unity，而应执行阶段一 D：core 最小服务下沉与配置驱动。
+- `wenjian-config` 当前已包含 `ConfigException`、`CsvConfigLoader`、`GameConfigRepository`、8 个配置 model 和配置校验测试。
+- `wenjian-game-core` 当前只有 `pom.xml`，尚无业务代码；但它已依赖 `wenjian-config`、`wenjian-protobuf` 和 `wenjian-share`，具备承载 core 规则的依赖方向。
+- `wenjian-gateway-ws` 当前已依赖 `wenjian-game-core`，下一阶段不需要新增 Maven 模块。
+- 当前第一链路硬编码仍集中在 `wenjian-game-server/wenjian-gateway-ws/src/main/java/com/wenjian/gateway/ws/FirstChainGatewayService.java`，包括开发玩家、区域、技能伤害、怪物血量、秘境地图、奖励池和奖励道具。
+- `FirstChainWebSocketHandler` 当前仍负责文本协议解析和文本响应格式化；下一阶段应保留文本协议兼容，避免同时改协议和改模块边界。
+- 配置迁移的关键不一致：旧 gateway 测试和 README 仍使用登录出生点 `10,12`，真实 `config/source/player_template.csv` 和 `config/source/region.csv` 中出生点为 `3200,2400`。阶段一 D 迁移到配置驱动时应同步更新测试和 README。
+- 已生成下一阶段计划：`docs/plans/wenjian-cursor-stage1-core-plan.md`。
+
 ## 2026-05-30 路线文档分析与 PM 计划发现
 
 - 本地最新提交为 `af8cfc4 中文：新增问剑江湖后续开发路线文档`，路线文档路径为 `docs/plans/wenjian-development-roadmap.md`。

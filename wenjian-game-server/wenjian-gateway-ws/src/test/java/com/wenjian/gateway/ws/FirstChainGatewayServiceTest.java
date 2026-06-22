@@ -19,7 +19,7 @@ class FirstChainGatewayServiceTest {
     assertTrue(result.playerId() > 0);
     assertFalse(result.sessionToken().isBlank());
     assertEquals(1001, result.regionId());
-    assertEquals(new GridPosition(10, 12), result.position());
+    assertEquals(new GridPosition(3200, 2400), result.position());
     assertEquals(1_700_000_000_000L, result.serverTimeMs());
   }
 
@@ -34,7 +34,7 @@ class FirstChainGatewayServiceTest {
     assertEquals(1001, result.regionId());
     assertNotNull(result.self());
     assertEquals(login.playerId(), result.self().entityId());
-    assertEquals(new GridPosition(10, 12), result.self().position());
+    assertEquals(new GridPosition(3200, 2400), result.self().position());
     assertFalse(result.entities().isEmpty());
     assertTrue(result.entities().stream().anyMatch(entity -> entity.entityId() == login.playerId()));
     assertTrue(result.serverTick() > 0);
@@ -51,7 +51,7 @@ class FirstChainGatewayServiceTest {
     assertEquals(ResultCode.OK, result.code());
     assertEquals(login.playerId(), result.skillEvent().casterId());
     assertEquals(2001, result.skillEvent().skillId());
-    assertEquals(new GridPosition(10, 12), result.skillEvent().position());
+    assertEquals(new GridPosition(3200, 2400), result.skillEvent().position());
     assertEquals(new GridVector(1, 0), result.skillEvent().aimDir());
     assertNotNull(result.damageEvent());
     assertEquals(login.playerId(), result.damageEvent().sourceId());

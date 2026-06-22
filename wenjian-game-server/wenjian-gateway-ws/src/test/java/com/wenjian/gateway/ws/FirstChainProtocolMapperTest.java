@@ -335,7 +335,11 @@ class FirstChainProtocolMapperTest {
     assertEquals(1_000_001L, loginProto.getPlayerId());
     assertEquals(1001, regionProto.getRegionId());
     assertEquals(1_000_001L, regionProto.getSelf().getEntityId());
+    assertEquals(3200, regionProto.getSelf().getPosition().getX());
+    assertEquals(2400, regionProto.getSelf().getPosition().getY());
     assertEquals(2001, skillProto.getSkillId());
+    assertEquals(3200, skillProto.getPosition().getX());
+    assertEquals(2400, skillProto.getPosition().getY());
     assertEquals(2_000_001L, damageProto.getTargetId());
     assertEquals(-12, damageProto.getHpDelta());
   }

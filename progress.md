@@ -8,14 +8,43 @@
 
 2026-05-30 PM 审查 Cursor 第一轮交付后发现构建阻塞并已修正：protobuf 源目录路径、protoc 下载方式、`wenjian-protobuf` 测试依赖、gateway mapper 对包级 DTO 的引用。修正后 `mvn -q -pl wenjian-protobuf -am test`、`mvn -q -pl wenjian-gateway-ws -am test`、`mvn -q test` 均通过。下一阶段计划已生成：`docs/plans/wenjian-cursor-stage1-config-plan.md`。
 
+2026-06-04 已分析现有计划和当前代码状态：CSV 配置加载与校验已经落地，`wenjian-game-core` 仍为空模块，第一链路业务规则仍集中在 `wenjian-gateway-ws` 的 `FirstChainGatewayService`。下一阶段计划已生成：`docs/plans/wenjian-cursor-stage1-core-plan.md`，目标是执行阶段一 D：core 最小服务下沉与配置驱动。
+
+2026-06-05 已完成阶段一 D：新增 `wenjian-game-core` 第一链路 core service 和测试，gateway 改为 core 适配层，WebSocket 文本协议保持兼容，登录/区域/技能/秘境链路改为通过 `GameConfigRepository` 使用真实 `config/source` 配置。`mvn -q -pl wenjian-game-core -am test`、`mvn -q -pl wenjian-gateway-ws -am test`、`mvn -q test` 均通过。
+
+2026-06-06 用户指出前端 Unity 还没有场景、特效和可运行客户端。已确认当前 `wenjian-client` 只有视觉标准和原型壳，没有真实 Unity 工程。项目下一步改为客户端优先，已生成计划：`docs/plans/wenjian-unity-proto-combatfield-client-plan.md`。后端数据库、复杂接口和战斗系统设计应等待 Unity 原型反馈。
+
 2026-05-20 已完成首批美术方向复盘：用户确认下一轮采用“明快清爽的像素武侠，类似轻量动作肉鸽，战斗读得很清楚”。第二轮美术工作已从概念图探索调整为可执行标准建设，并生成角色规格、战斗场景、HUD、技能特效、敌人剪影、主城地块和秘境房间 7 张标准素材。
 
 ## 最新状态
 
-- 日期：2026-05-21
+- 日期：2026-06-06
 - 分支：codex/wenjian-architecture
-- 工作区：后端 Maven 骨架、内存登录/进入区域链路、Unity `Proto_CombatField` 原型壳、临时客户端 WebSocket 验收、单技能事件链路和最小单人秘境开始/结算闭环已完成
-- 当前重点：等待 Task 8 验收；验收通过后提交并推送 `codex/wenjian-architecture`。
+- 工作区：后端阶段一 D 已完成但未提交；Unity 客户端仍未实作，只有视觉标准和原型说明
+- 当前重点：先执行 `docs/plans/wenjian-unity-proto-combatfield-client-plan.md`，创建真实 Unity `Proto_CombatField` 原型，再用客户端结果反推后端协议、配置和数据库设计。
+
+### 2026-06-06：客户端优先计划生成
+
+- 已确认当前前端没有 Unity 工程、Scene、C# 脚本、Tilemap、Prefab、Animator、VFX、HUD 或网络连接。
+- 已生成 Unity 客户端优先开发计划，目标是先做竹林战斗场、玩家、敌人、HUD、WebSocket 联调、技能特效和秘境结算反馈。
+- 已明确后端在客户端原型跑起来前不继续设计最终数据库、复杂战斗模块、KCP 或大量协议字段。
+- 下一步应先检查 Unity Editor 安装情况，再创建 `wenjian-client/Proto_CombatField/UnityProject/`。
+
+### 2026-06-05：阶段一 D 完成
+
+- 已新增 `FirstChainCoreService` 和 `FirstChainCoreDtos`，core 负责登录、进入区域、默认技能、秘境开始和秘境结算的最小业务规则。
+- 已让 core 通过 `GameConfigRepository` 读取真实 `config/source` 中的玩家模板、技能、怪物、秘境和奖励配置。
+- 已将 `FirstChainGatewayService` 改为 core 适配层，gateway 主代码不再持有技能伤害、怪物血量、秘境奖励等玩法配置硬编码。
+- WebSocket 文本协议保持不变，测试已同步为配置驱动坐标 `3200,2400`。
+- 已通过 core 模块、gateway 模块和后端全量测试。
+
+### 2026-06-04：阶段一 D 计划生成
+
+- 已分析现有路线文档、阶段计划、进度记录和发现记录。
+- 已确认阶段一 A/B 与阶段一 C 均已在当前代码中落地。
+- 已确认 `wenjian-game-core` 仍无业务实现，`FirstChainGatewayService` 仍持有玩家、区域、技能、怪物、秘境和奖励硬编码常量。
+- 已发现配置驱动迁移时的关键差异：旧 gateway 测试断言出生点 `10,12`，真实 `config/source/player_template.csv` 和 `region.csv` 中的出生点为 `3200,2400`。
+- 已生成下一阶段计划：`docs/plans/wenjian-cursor-stage1-core-plan.md`。
 
 ## 已完成
 

@@ -16,6 +16,7 @@ namespace Wenjian.Client.Tests.UI
                 PlayerId = 1000001,
                 RegionId = 1001,
                 RogueState = "Field",
+                PrototypeRewardSummary = "Sword Intent +10%",
                 ServerTick = 42,
                 ServerX = 3200,
                 ServerY = 2400,
@@ -33,8 +34,10 @@ namespace Wenjian.Client.Tests.UI
             Assert.That(presenter.RegionText.text, Is.EqualTo("Region 1001  Rogue Field"));
             Assert.That(presenter.DebugText.text, Is.EqualTo("Tick 42  Pos 3200,2400"));
             Assert.That(presenter.RecentEventText.text, Is.EqualTo("Event: LOGIN_OK"));
+            Assert.That(presenter.RewardText.text, Is.EqualTo("Reward Sword Intent +10%"));
             Assert.That(presenter.PlayerHealthFill.localScale.x, Is.EqualTo(0.75f).Within(0.001f));
             Assert.That(presenter.EnemyHealthFill.localScale.x, Is.EqualTo(0.4f).Within(0.001f));
+            Assert.That(presenter.EnemyWorldHealthFill.localScale.x, Is.EqualTo(0.4f).Within(0.001f));
         }
 
         [Test]
@@ -64,6 +67,7 @@ namespace Wenjian.Client.Tests.UI
             Assert.That(presenter.RecentEventText.text, Is.EqualTo("Event: --"));
             Assert.That(presenter.PlayerHealthFill.localScale.x, Is.EqualTo(1f).Within(0.001f));
             Assert.That(presenter.EnemyHealthFill.localScale.x, Is.EqualTo(0f).Within(0.001f));
+            Assert.That(presenter.EnemyWorldHealthFill.localScale.x, Is.EqualTo(0f).Within(0.001f));
         }
 
         private static PrototypeHudPresenter CreatePresenter()
@@ -75,8 +79,10 @@ namespace Wenjian.Client.Tests.UI
             presenter.RegionText = CreateText("Region");
             presenter.DebugText = CreateText("Debug");
             presenter.RecentEventText = CreateText("Event");
+            presenter.RewardText = CreateText("Reward");
             presenter.PlayerHealthFill = new GameObject("PlayerHealthFill").transform;
             presenter.EnemyHealthFill = new GameObject("EnemyHealthFill").transform;
+            presenter.EnemyWorldHealthFill = new GameObject("EnemyWorldHealthFill").transform;
             return presenter;
         }
 

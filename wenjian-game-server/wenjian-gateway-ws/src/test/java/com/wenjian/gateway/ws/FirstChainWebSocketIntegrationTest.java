@@ -14,7 +14,9 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = "wenjian.config.source-dir=../../config/source")
 class FirstChainWebSocketIntegrationTest {
   @LocalServerPort
   private int port;
@@ -41,6 +43,8 @@ class FirstChainWebSocketIntegrationTest {
     assertTrue(loginReply.contains("type=LOGIN_OK"));
     assertTrue(loginReply.contains("playerId=1000001"));
     assertTrue(loginReply.contains("regionId=1001"));
+    assertTrue(loginReply.contains("x=3200"));
+    assertTrue(loginReply.contains("y=2400"));
 
     session.sendMessage(new TextMessage("ENTER_REGION 1000001 1001"));
     String regionReply = replies.poll(5, TimeUnit.SECONDS);
@@ -57,6 +61,8 @@ class FirstChainWebSocketIntegrationTest {
     assertTrue(skillReply.contains("type=SKILL_EVENT"));
     assertTrue(skillReply.contains("casterId=1000001"));
     assertTrue(skillReply.contains("skillId=2001"));
+    assertTrue(skillReply.contains("x=3200"));
+    assertTrue(skillReply.contains("y=2400"));
     assertTrue(skillReply.contains("aimX=1"));
     assertTrue(skillReply.contains("aimY=0"));
     assertTrue(damageReply.contains("type=DAMAGE_EVENT"));

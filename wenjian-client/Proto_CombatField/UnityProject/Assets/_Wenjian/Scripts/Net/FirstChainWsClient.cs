@@ -78,22 +78,33 @@ namespace Wenjian.Client.Net
             try
             {
                 using var socket = new ClientWebSocket();
+                using var sendGate = new SemaphoreSlim(1, 1);
+                void HandleOutgoingCommandQueued(string command)
+                {
+                    _ = DrainOutgoingCommandsAsync(socket, sendGate, cancellationToken);
+                }
+
                 await socket.ConnectAsync(new Uri(endpoint), cancellationToken);
+                hudController.OutgoingCommandQueued += HandleOutgoingCommandQueued;
                 await SendTextAsync(socket, FirstChainCommandBuilder.BuildLogin(loginKey, CurrentTimeMillis()), cancellationToken);
 
-                while (socket.State == WebSocketState.Open && !cancellationToken.IsCancellationRequested)
+                try
                 {
-                    string payload = await ReceiveTextAsync(socket, cancellationToken);
-                    if (payload == null)
+                    while (socket.State == WebSocketState.Open && !cancellationToken.IsCancellationRequested)
                     {
-                        break;
-                    }
+                        string payload = await ReceiveTextAsync(socket, cancellationToken);
+                        if (payload == null)
+                        {
+                            break;
+                        }
 
-                    hudController.ApplyServerPayload(payload);
-                    while (hudController.TryDequeueOutgoingCommand(out string command))
-                    {
-                        await SendTextAsync(socket, command, cancellationToken);
+                        hudController.ApplyServerPayload(payload);
+                        await DrainOutgoingCommandsAsync(socket, sendGate, cancellationToken);
                     }
+                }
+                finally
+                {
+                    hudController.OutgoingCommandQueued -= HandleOutgoingCommandQueued;
                 }
             }
             catch (OperationCanceledException)
@@ -103,6 +114,40 @@ namespace Wenjian.Client.Net
             catch (Exception exception)
             {
                 hudController.ApplyConnectionFailure($"Connect failed: {exception.GetType().Name}");
+            }
+        }
+
+        private async Task DrainOutgoingCommandsAsync(
+            ClientWebSocket socket,
+            SemaphoreSlim sendGate,
+            CancellationToken cancellationToken)
+        {
+            if (socket.State != WebSocketState.Open)
+            {
+                return;
+            }
+
+            await sendGate.WaitAsync(cancellationToken);
+            try
+            {
+                while (socket.State == WebSocketState.Open
+                    && !cancellationToken.IsCancellationRequested
+                    && hudController.TryDequeueOutgoingCommand(out string command))
+                {
+                    await SendTextAsync(socket, command, cancellationToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception exception)
+            {
+                hudController.ApplyConnectionFailure($"Send failed: {exception.GetType().Name}");
+            }
+            finally
+            {
+                sendGate.Release();
             }
         }
 
